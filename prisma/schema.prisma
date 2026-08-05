@@ -1,0 +1,427 @@
+// Bensal Investment Co. Ltd — database schema
+// Phase 1: content models power the public site (fetched directly by
+// Server Components). Phase 2 adds the admin dashboard that manages all
+// of this without code changes; Phase 3 wires up AuditLog + granular
+// permissions on top of Role.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Auth
+// ---------------------------------------------------------------------------
+
+model Role {
+  id    String @id @default(cuid())
+  name  String @unique // "ADMIN" | "EDITOR" | "STAFF"
+  users User[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  image     String?
+  isActive  Boolean  @default(true)
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Company / site settings (singleton)
+// ---------------------------------------------------------------------------
+
+model Company {
+  id String @id @default(cuid())
+
+  name        String
+  legalName   String
+  slogan      String
+  description String @db.Text // history / "who we are"
+  mission     String @db.Text
+  vision      String @db.Text
+
+  foundedYear Int
+  staffCount  String
+
+  email     String
+  altEmails String[]
+  phone     String
+  altPhones String[]
+  whatsapp  String
+
+  address     String
+  city        String
+  country     String
+  mapEmbedUrl String?
+
+  businessHours   Json // [{ day, open, close }]
+  socials         Json // { facebook, instagram, linkedin, twitter, ... }
+  stats           Json // [{ label, value, suffix }]
+  branches        String[]
+  contractHistory Json // [{ year, cleaning, fumigation }]
+
+  logoUrl        String?
+  logoInverseUrl String?
+  faviconUrl     String?
+
+  seoTitle       String?
+  seoDescription String?
+
+  updatedAt DateTime @updatedAt
+}
+
+model TeamMember {
+  id           String    @id @default(cuid())
+  name         String
+  title        String
+  bio          String?   @db.Text
+  photoUrl     String?
+  isLeadership Boolean   @default(false)
+  order        Int       @default(0)
+  createdAt    DateTime  @default(now())
+  deletedAt    DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// Services
+// ---------------------------------------------------------------------------
+
+model Service {
+  id               String    @id @default(cuid())
+  slug             String    @unique
+  title            String
+  shortDescription String
+  description      String    @db.Text
+  icon             String // lucide/react-icons key
+  image            String?
+  order            Int       @default(0)
+  isFeatured       Boolean   @default(true)
+  seoTitle         String?
+  seoDescription   String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// Products
+// ---------------------------------------------------------------------------
+
+model ProductCategory {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?
+  image       String?
+  order       Int       @default(0)
+  products    Product[]
+  deletedAt   DateTime?
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Product {
+  id               String          @id @default(cuid())
+  slug             String          @unique
+  name             String
+  categoryId       String
+  category         ProductCategory @relation(fields: [categoryId], references: [id])
+  shortDescription String
+  description      String          @db.Text
+  images           String[]
+  sku              String?
+  isFeatured       Boolean         @default(false)
+  status           ProductStatus   @default(PUBLISHED)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  deletedAt        DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// Projects
+// ---------------------------------------------------------------------------
+
+enum ProjectStatus {
+  ONGOING
+  COMPLETED
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  client      String?
+  category    String
+  location    String?
+  year        Int?
+  summary     String
+  description String        @db.Text
+  coverImage  String?
+  images      String[]
+  status      ProjectStatus @default(COMPLETED)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// Gallery
+// ---------------------------------------------------------------------------
+
+enum GalleryType {
+  IMAGE
+  VIDEO
+}
+
+model GalleryItem {
+  id           String      @id @default(cuid())
+  title        String
+  type         GalleryType @default(IMAGE)
+  url          String
+  thumbnailUrl String?
+  category     String?
+  order        Int         @default(0)
+  createdAt    DateTime    @default(now())
+  deletedAt    DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// News / Blog
+// ---------------------------------------------------------------------------
+
+model NewsPost {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  title          String
+  excerpt        String
+  content        String    @db.Text
+  coverImage     String?
+  category       String?
+  tags           String[]
+  author         String?
+  published      Boolean   @default(false)
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// Social proof
+// ---------------------------------------------------------------------------
+
+model Testimonial {
+  id        String    @id @default(cuid())
+  name      String
+  company   String?
+  role      String?
+  message   String    @db.Text
+  avatarUrl String?
+  rating    Int       @default(5)
+  order     Int       @default(0)
+  published Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+}
+
+model Partner {
+  id        String    @id @default(cuid())
+  name      String
+  logoUrl   String
+  url       String?
+  order     Int       @default(0)
+  deletedAt DateTime?
+}
+
+model Client {
+  id        String    @id @default(cuid())
+  name      String
+  logoUrl   String
+  url       String?
+  order     Int       @default(0)
+  deletedAt DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// FAQ
+// ---------------------------------------------------------------------------
+
+model Faq {
+  id        String    @id @default(cuid())
+  question  String
+  answer    String    @db.Text
+  category  String?
+  order     Int       @default(0)
+  deletedAt DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// Careers
+// ---------------------------------------------------------------------------
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+model JobPosting {
+  id           String           @id @default(cuid())
+  slug         String           @unique
+  title        String
+  department   String?
+  location     String
+  type         JobType          @default(FULL_TIME)
+  description  String           @db.Text
+  requirements String           @db.Text
+  isActive     Boolean          @default(true)
+  closingDate  DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  deletedAt    DateTime?
+  applications JobApplication[]
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  SHORTLISTED
+  REJECTED
+  HIRED
+}
+
+model JobApplication {
+  id              String            @id @default(cuid())
+  jobPostingId    String?
+  jobPosting      JobPosting?       @relation(fields: [jobPostingId], references: [id])
+  fullName        String
+  email           String
+  phone           String
+  coverLetter     String?           @db.Text
+  cvUrl           String
+  certificateUrls String[]
+  status          ApplicationStatus @default(PENDING)
+  createdAt       DateTime          @default(now())
+  deletedAt       DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// Contact / quotations / newsletter
+// ---------------------------------------------------------------------------
+
+enum MessageStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+model ContactMessage {
+  id            String        @id @default(cuid())
+  fullName      String
+  company       String?
+  email         String
+  phone         String?
+  subject       String
+  message       String        @db.Text
+  attachmentUrl String?
+  status        MessageStatus @default(NEW)
+  createdAt     DateTime      @default(now())
+  deletedAt     DateTime?
+}
+
+model QuotationRequest {
+  id               String        @id @default(cuid())
+  fullName         String
+  company          String?
+  email            String
+  phone            String?
+  productOrService String
+  details          String        @db.Text
+  attachmentUrl    String?
+  status           MessageStatus @default(NEW)
+  createdAt        DateTime      @default(now())
+  deletedAt        DateTime?
+}
+
+model NewsletterSubscriber {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  isActive     Boolean   @default(true)
+  subscribedAt DateTime  @default(now())
+  deletedAt    DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// SEO / Media / Audit (schema-ready; admin UI lands in Phase 2/3)
+// ---------------------------------------------------------------------------
+
+model SeoMeta {
+  id          String  @id @default(cuid())
+  page        String  @unique // e.g. "home", "about", "services"
+  title       String?
+  description String?
+  ogImage     String?
+}
+
+model Media {
+  id        String    @id @default(cuid())
+  url       String
+  filename  String
+  mimeType  String
+  size      Int
+  alt       String?
+  folder    String?
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String?
+  meta       Json?
+  createdAt  DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Navigation menus (drives Navbar + Footer "Explore" list)
+// ---------------------------------------------------------------------------
+
+model Menu {
+  id    String     @id @default(cuid())
+  key   String     @unique // "primary" | "footer"
+  label String
+  items MenuItem[]
+}
+
+model MenuItem {
+  id           String     @id @default(cuid())
+  menuId       String
+  menu         Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  parentId     String?
+  parent       MenuItem?  @relation("MenuItemChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children     MenuItem[] @relation("MenuItemChildren")
+  label        String
+  url          String
+  order        Int        @default(0)
+  openInNewTab Boolean    @default(false)
+}

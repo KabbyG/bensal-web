@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bensal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bensal_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-bensal}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - bensal_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bensal}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-off: `docker compose run --rm migrate` — applies pending Prisma
+  # migrations. Run this before starting `web` for the first time and after
+  # every schema change.
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: migrator
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bensal}:${POSTGRES_PASSWORD:-bensal_dev_password}@db:5432/${POSTGRES_DB:-bensal}?schema=public
+    profiles: ["tools"]
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bensal}:${POSTGRES_PASSWORD:-bensal_dev_password}@db:5432/${POSTGRES_DB:-bensal}?schema=public
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - bensal_uploads:/app/public/uploads
+
+volumes:
+  bensal_pgdata:
+  bensal_uploads:

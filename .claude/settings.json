@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm add *)",
+      "Bash(docker compose *)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(docker run *)",
+      "Bash(MSYS_NO_PATHCONV=1 docker run --rm -v \"c:/Users/habak/Desktop/Bensal/package.json:/app/package.json:ro\" -v \"c:/Users/habak/Desktop/Bensal/pnpm-lock.yaml:/app/pnpm-lock.yaml:ro\" -v \"c:/Users/habak/Desktop/Bensal/pnpm-workspace.yaml:/app/pnpm-workspace.yaml:ro\" -w /app node:22-alpine sh -c \"corepack enable && pnpm --version\")",
+      "Bash(MSYS_NO_PATHCONV=1 docker run --rm -v \"c:/Users/habak/Desktop/Bensal/package.json:/app/package.json:ro\" -v \"c:/Users/habak/Desktop/Bensal/pnpm-lock.yaml:/app/pnpm-lock.yaml:ro\" -v \"c:/Users/habak/Desktop/Bensal/pnpm-workspace.yaml:/app/pnpm-workspace.yaml:ro\" -w /app node:22-alpine sh -c \"corepack enable && pnpm install --frozen-lockfile\")"
+    ]
+  }
+}
