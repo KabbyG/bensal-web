@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, Phone, ChevronDown } from "lucide-react";
-import { useScroll, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent, useReducedMotion } from "framer-motion";
 import type { Company } from "@/lib/generated/prisma/client";
 import type { NavLink } from "@/lib/queries";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,7 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
   const [scrolled, setScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const { scrollY } = useScroll();
+  const prefersReducedMotion = useReducedMotion();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 40);
@@ -27,25 +28,30 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
   const transparent = isHome && !scrolled;
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-40 transition-all duration-500",
-        transparent ? "bg-transparent" : "glass shadow-sm"
-      )}
-    >
-      <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
-        <Link href="/" className="flex items-center gap-2.5 shrink-0">
+    <header className="fixed inset-x-0 top-0 z-40 px-4 pt-3 sm:px-6 sm:pt-4 lg:px-8 lg:pt-5">
+      <motion.div
+        initial={prefersReducedMotion ? false : { opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className={cn(
+          "mx-auto flex h-16 w-full max-w-7xl items-center justify-between rounded-full px-4 transition-all duration-300 sm:h-[4.25rem] sm:px-5 lg:px-6",
+          transparent
+            ? "border border-white/15 bg-white/10 backdrop-blur-md"
+            : "border border-border/60 bg-surface/80 shadow-lg shadow-black/[0.04] backdrop-blur-xl"
+        )}
+      >
+        <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <Image
             src={transparent ? company.logoInverseUrl ?? "/brand/logo-inverse.png" : company.logoUrl ?? "/brand/logo.png"}
             alt={company.name}
             width={261}
             height={100}
             priority
-            className="h-11 w-auto sm:h-12"
+            className="h-9 w-auto transition-all duration-300 sm:h-10"
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex">
           {links.map((link) => {
             const active = pathname === link.url;
             const hasChildren = link.children.length > 0;
@@ -56,8 +62,10 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
                   target={link.openInNewTab ? "_blank" : undefined}
                   rel={link.openInNewTab ? "noopener noreferrer" : undefined}
                   className={cn(
-                    "relative inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                    transparent ? "text-white/90 hover:text-white" : "text-foreground/80 hover:text-foreground"
+                    "relative inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200",
+                    transparent
+                      ? "text-white/90 hover:bg-white/10 hover:text-white"
+                      : "text-foreground/80 hover:bg-surface-muted hover:text-foreground"
                   )}
                 >
                   {link.label}
@@ -70,7 +78,7 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
                   />
                 </Link>
                 {hasChildren && (
-                  <div className="invisible absolute left-0 top-full z-10 min-w-[180px] rounded-xl border border-border bg-card p-2 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:opacity-100">
+                  <div className="invisible absolute left-0 top-full z-10 min-w-[180px] translate-y-1 rounded-xl border border-border bg-card p-2 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:translate-y-2 group-hover:opacity-100">
                     {link.children.map((child) => (
                       <Link
                         key={child.id}
@@ -170,7 +178,7 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
             </SheetContent>
           </Sheet>
         </div>
-      </div>
+      </motion.div>
     </header>
   );
 }

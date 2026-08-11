@@ -56,7 +56,7 @@ async function main() {
     name: "Bensal Investment",
     legalName: "Bensal Investment Co. Ltd.",
     slogan:
-      "We are the best in Cleaning & Gardening, Fumigation, Supply of Electronics, ICT Equipment, and Building Materials that provide quality services for customer satisfaction in Tanzania, and we are well prepared to compete globally.",
+      "From cleaning, gardening, and fumigation to electronics, ICT equipment, and building materials, Bensal delivers reliable supplies, procurement, and professional services to businesses, institutions, and customers across Tanzania — exactly when they need them.",
     description:
       "Bensal Investment Co. Ltd. is a privately owned company established in 2014 as a business corporation in Tanzania. The company basically deals with Cleaning & Gardening, Fumigation, Supply of Electronics, ICT Equipment, and Building Materials. It has more than 50 staff, including some professionals.",
     mission:

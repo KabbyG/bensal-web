@@ -10,6 +10,9 @@ FROM base AS deps
 # (Alpine), which has no prebuilt binary for this platform.
 RUN apk add --no-cache python3 make g++
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# postinstall runs `prisma generate`, which needs the schema present.
+COPY prisma/schema.prisma ./prisma/schema.prisma
+COPY prisma.config.ts ./prisma.config.ts
 RUN pnpm install --frozen-lockfile
 
 # --- Build --------------------------------------------------------------

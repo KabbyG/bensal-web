@@ -1,29 +1,42 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Company } from "@/lib/generated/prisma/client";
 
 export function Hero({ company }: { company: Company }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const imageParallax = useTransform(scrollYProgress, [0, 1], [0, prefersReducedMotion ? 0 : 60]);
+
   return (
-    <section className="relative flex min-h-[100svh] items-center overflow-hidden bg-brand-gradient text-white">
+    <section
+      ref={sectionRef}
+      className="relative flex min-h-[100svh] items-center overflow-hidden bg-brand-gradient text-white"
+    >
       <div className="pointer-events-none absolute inset-0 bg-mesh" />
 
       <motion.div
         className="pointer-events-none absolute -right-24 top-1/4 h-72 w-72 rounded-full bg-accent/20 blur-3xl"
-        animate={{ y: [0, -30, 0] }}
+        animate={prefersReducedMotion ? undefined : { y: [0, -30, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
         className="pointer-events-none absolute -left-16 bottom-1/4 h-64 w-64 rounded-full bg-brand-forest-light/40 blur-3xl"
-        animate={{ y: [0, 24, 0] }}
+        animate={prefersReducedMotion ? undefined : { y: [0, 24, 0] }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />
 
-      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-16 px-5 pt-32 pb-20 sm:px-8 lg:grid-cols-2 lg:px-10 lg:pt-24">
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-16 px-5 pt-40 pb-20 sm:px-8 lg:grid-cols-2 lg:px-10 lg:pt-32">
         <div>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -38,10 +51,9 @@ export function Hero({ company }: { company: Company }) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display text-4xl font-extrabold leading-[1.08] text-balance sm:text-5xl lg:text-[3.4rem]"
+            className="font-display text-5xl font-extrabold leading-[1.05] text-balance sm:text-6xl lg:text-[4rem]"
           >
-            Cleaning, Fumigation &amp; Supply —{" "}
-            <span className="text-accent">done right</span>, across Tanzania.
+            Everything You Need. <span className="text-accent">Delivered Right.</span>
           </motion.h1>
 
           <motion.p
@@ -98,8 +110,14 @@ export function Hero({ company }: { company: Company }) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
+          style={{ y: imageParallax }}
           className="relative hidden justify-self-end lg:block"
         >
+          <motion.div
+            className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-accent/25 blur-[80px]"
+            animate={prefersReducedMotion ? undefined : { opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
           <div className="animate-float">
             <Image
               src="/brand/hero-runner.png"
@@ -120,7 +138,7 @@ export function Hero({ company }: { company: Company }) {
         className="absolute inset-x-0 bottom-8 flex justify-center"
       >
         <motion.div
-          animate={{ y: [0, 8, 0] }}
+          animate={prefersReducedMotion ? undefined : { y: [0, 8, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         >
           <ChevronDown className="h-6 w-6 text-white/50" />
