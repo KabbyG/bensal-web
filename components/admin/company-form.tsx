@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
 import type { Company } from "@/lib/generated/prisma/client";
 import { updateCompany } from "@/actions/admin/company";
+import { DEFAULT_COMPANY_DATA } from "@/lib/admin/default-company-data";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -174,9 +175,10 @@ function ContractHistoryEditor({ name, defaultValue }: { name: string; defaultVa
   );
 }
 
-export function CompanyForm({ company }: { company: Company }) {
+export function CompanyForm({ company }: { company: Company | null }) {
   const [pending, startTransition] = useTransition();
-  const socials = (company.socials as Record<string, string>) ?? {};
+  const c = company ?? DEFAULT_COMPANY_DATA;
+  const socials = (c.socials as Record<string, string>) ?? {};
 
   function handleSubmit(formData: FormData) {
     startTransition(async () => {
@@ -195,32 +197,32 @@ export function CompanyForm({ company }: { company: Company }) {
         <CardContent className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="name">Display name</Label>
-            <Input id="name" name="name" defaultValue={company.name} required />
+            <Input id="name" name="name" defaultValue={c.name} required />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="legalName">Legal name</Label>
-            <Input id="legalName" name="legalName" defaultValue={company.legalName} required />
+            <Input id="legalName" name="legalName" defaultValue={c.legalName} required />
           </div>
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="slogan">Slogan</Label>
-            <Input id="slogan" name="slogan" defaultValue={company.slogan} required />
+            <Input id="slogan" name="slogan" defaultValue={c.slogan} required />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="foundedYear">Founded year</Label>
-            <Input id="foundedYear" name="foundedYear" type="number" defaultValue={company.foundedYear} required />
+            <Input id="foundedYear" name="foundedYear" type="number" defaultValue={c.foundedYear} required />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="staffCount">Staff count</Label>
-            <Input id="staffCount" name="staffCount" defaultValue={company.staffCount} required />
+            <Input id="staffCount" name="staffCount" defaultValue={c.staffCount} required />
           </div>
           <div className="sm:col-span-2">
-            <RichTextEditor name="description" label="About / history" defaultValue={company.description} />
+            <RichTextEditor name="description" label="About / history" defaultValue={c.description} />
           </div>
           <div className="sm:col-span-2">
-            <RichTextEditor name="mission" label="Mission" defaultValue={company.mission} />
+            <RichTextEditor name="mission" label="Mission" defaultValue={c.mission} />
           </div>
           <div className="sm:col-span-2">
-            <RichTextEditor name="vision" label="Vision" defaultValue={company.vision} />
+            <RichTextEditor name="vision" label="Vision" defaultValue={c.vision} />
           </div>
         </CardContent>
       </Card>
@@ -232,35 +234,35 @@ export function CompanyForm({ company }: { company: Company }) {
         <CardContent className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="email">Primary email</Label>
-            <Input id="email" name="email" type="email" defaultValue={company.email} required />
+            <Input id="email" name="email" type="email" defaultValue={c.email} required />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="phone">Primary phone</Label>
-            <Input id="phone" name="phone" defaultValue={company.phone} required />
+            <Input id="phone" name="phone" defaultValue={c.phone} required />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="whatsapp">WhatsApp</Label>
-            <Input id="whatsapp" name="whatsapp" defaultValue={company.whatsapp} required />
+            <Input id="whatsapp" name="whatsapp" defaultValue={c.whatsapp} required />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="mapEmbedUrl">Map embed URL</Label>
-            <Input id="mapEmbedUrl" name="mapEmbedUrl" defaultValue={company.mapEmbedUrl ?? ""} />
+            <Input id="mapEmbedUrl" name="mapEmbedUrl" defaultValue={c.mapEmbedUrl ?? ""} />
           </div>
-          <TagInput name="altEmails" label="Alternate emails" defaultValue={company.altEmails} />
-          <TagInput name="altPhones" label="Alternate phones" defaultValue={company.altPhones} />
+          <TagInput name="altEmails" label="Alternate emails" defaultValue={c.altEmails} />
+          <TagInput name="altPhones" label="Alternate phones" defaultValue={c.altPhones} />
           <div className="space-y-1.5">
             <Label htmlFor="address">Address</Label>
-            <Input id="address" name="address" defaultValue={company.address} required />
+            <Input id="address" name="address" defaultValue={c.address} required />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="city">City</Label>
-            <Input id="city" name="city" defaultValue={company.city} required />
+            <Input id="city" name="city" defaultValue={c.city} required />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="country">Country</Label>
-            <Input id="country" name="country" defaultValue={company.country} required />
+            <Input id="country" name="country" defaultValue={c.country} required />
           </div>
-          <TagInput name="branches" label="Branches" defaultValue={company.branches} />
+          <TagInput name="branches" label="Branches" defaultValue={c.branches} />
         </CardContent>
       </Card>
 
@@ -269,7 +271,7 @@ export function CompanyForm({ company }: { company: Company }) {
           <CardTitle>Business hours</CardTitle>
         </CardHeader>
         <CardContent>
-          <BusinessHoursEditor name="businessHours" defaultValue={(company.businessHours as BusinessHour[]) ?? []} />
+          <BusinessHoursEditor name="businessHours" defaultValue={(c.businessHours as BusinessHour[]) ?? []} />
         </CardContent>
       </Card>
 
@@ -287,7 +289,7 @@ export function CompanyForm({ company }: { company: Company }) {
           <CardTitle>Homepage stats</CardTitle>
         </CardHeader>
         <CardContent>
-          <StatsEditor name="stats" defaultValue={(company.stats as Stat[]) ?? []} />
+          <StatsEditor name="stats" defaultValue={(c.stats as Stat[]) ?? []} />
         </CardContent>
       </Card>
 
@@ -296,7 +298,7 @@ export function CompanyForm({ company }: { company: Company }) {
           <CardTitle>Contract history (chart)</CardTitle>
         </CardHeader>
         <CardContent>
-          <ContractHistoryEditor name="contractHistory" defaultValue={(company.contractHistory as ContractPoint[]) ?? []} />
+          <ContractHistoryEditor name="contractHistory" defaultValue={(c.contractHistory as ContractPoint[]) ?? []} />
         </CardContent>
       </Card>
 
@@ -305,9 +307,9 @@ export function CompanyForm({ company }: { company: Company }) {
           <CardTitle>Branding</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6 sm:grid-cols-3">
-          <ImageUploadField name="logoFile" label="Logo" defaultUrl={company.logoUrl} />
-          <ImageUploadField name="logoInverseFile" label="Inverse logo (white)" defaultUrl={company.logoInverseUrl} />
-          <ImageUploadField name="faviconFile" label="Favicon" defaultUrl={company.faviconUrl} />
+          <ImageUploadField name="logoFile" label="Logo" defaultUrl={c.logoUrl} />
+          <ImageUploadField name="logoInverseFile" label="Inverse logo (white)" defaultUrl={c.logoInverseUrl} />
+          <ImageUploadField name="faviconFile" label="Favicon" defaultUrl={c.faviconUrl} />
         </CardContent>
       </Card>
 
@@ -318,11 +320,11 @@ export function CompanyForm({ company }: { company: Company }) {
         <CardContent className="grid gap-5">
           <div className="space-y-1.5">
             <Label htmlFor="seoTitle">Default SEO title</Label>
-            <Input id="seoTitle" name="seoTitle" defaultValue={company.seoTitle ?? ""} />
+            <Input id="seoTitle" name="seoTitle" defaultValue={c.seoTitle ?? ""} />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="seoDescription">Default SEO description</Label>
-            <Textarea id="seoDescription" name="seoDescription" defaultValue={company.seoDescription ?? ""} rows={3} />
+            <Textarea id="seoDescription" name="seoDescription" defaultValue={c.seoDescription ?? ""} rows={3} />
           </div>
         </CardContent>
       </Card>

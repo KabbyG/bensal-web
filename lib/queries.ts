@@ -4,10 +4,16 @@ export async function getCompany() {
   const company = await prisma.company.findFirst();
   if (!company) {
     throw new Error(
-      "No Company record found — run `pnpm prisma:seed` to populate site content."
+      "No Company record found — run `pnpm prisma:seed`, or save the form at /admin/company, to populate site content."
     );
   }
   return company;
+}
+
+// Used by the Company Settings admin page, which must render even before
+// the singleton row exists so the admin can create it.
+export function getCompanyOrNull() {
+  return prisma.company.findFirst();
 }
 
 export function getLeadership() {

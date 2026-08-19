@@ -6,6 +6,7 @@ import { requireAdmin, UnauthorizedError } from "@/lib/admin/require-admin";
 import { logAudit } from "@/lib/admin/audit";
 import { saveImageUpload, UploadValidationError } from "@/lib/upload";
 import { companySchema } from "@/lib/admin/validations";
+import { DEFAULT_COMPANY_DATA } from "@/lib/admin/default-company-data";
 import type { ActionResult } from "@/actions/newsletter";
 
 function parseJsonField<T>(formData: FormData, name: string, fallback: T): T {
@@ -41,8 +42,12 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
     throw error;
   }
 
+  // No `if (!existing) return error` guard here on purpose: Company is a
+  // singleton that's supposed to be created by `pnpm prisma:seed`, but if
+  // that never ran against this database (e.g. a fresh deploy), this form
+  // is the only way to create it — so this upserts instead of requiring
+  // a row to already exist.
   const existing = await prisma.company.findFirst();
-  if (!existing) return { success: false, message: "No company record found." };
 
   const parsed = companySchema.safeParse({
     name: formData.get("name"),
@@ -81,55 +86,60 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
   let logoInverseUrl: string | null;
   let faviconUrl: string | null;
   try {
-    logoUrl = await resolveImage(formData, "logo", existing.logoUrl);
-    logoInverseUrl = await resolveImage(formData, "logoInverse", existing.logoInverseUrl);
-    faviconUrl = await resolveImage(formData, "favicon", existing.faviconUrl);
+    logoUrl = await resolveImage(formData, "logo", existing?.logoUrl ?? DEFAULT_COMPANY_DATA.logoUrl);
+    logoInverseUrl = await resolveImage(
+      formData,
+      "logoInverse",
+      existing?.logoInverseUrl ?? DEFAULT_COMPANY_DATA.logoInverseUrl
+    );
+    faviconUrl = await resolveImage(formData, "favicon", existing?.faviconUrl ?? DEFAULT_COMPANY_DATA.faviconUrl);
   } catch (error) {
     if (error instanceof UploadValidationError) return { success: false, message: error.message };
     throw error;
   }
 
-  await prisma.company.update({
-    where: { id: existing.id },
-    data: {
-      name: data.name,
-      legalName: data.legalName,
-      slogan: data.slogan,
-      description: data.description,
-      mission: data.mission,
-      vision: data.vision,
-      foundedYear: data.foundedYear,
-      staffCount: data.staffCount,
-      email: data.email,
-      altEmails: data.altEmails,
-      phone: data.phone,
-      altPhones: data.altPhones,
-      whatsapp: data.whatsapp,
-      address: data.address,
-      city: data.city,
-      country: data.country,
-      mapEmbedUrl: data.mapEmbedUrl || null,
-      businessHours: data.businessHours,
-      socials: data.socials,
-      stats: data.stats,
-      branches: data.branches,
-      contractHistory: data.contractHistory,
-      seoTitle: data.seoTitle || null,
-      seoDescription: data.seoDescription || null,
-      logoUrl,
-      logoInverseUrl,
-      faviconUrl,
-    },
-  });
+  const companyData = {
+    name: data.name,
+    legalName: data.legalName,
+    slogan: data.slogan,
+    description: data.description,
+    mission: data.mission,
+    vision: data.vision,
+    foundedYear: data.foundedYear,
+    staffCount: data.staffCount,
+    email: data.email,
+    altEmails: data.altEmails,
+    phone: data.phone,
+    altPhones: data.altPhones,
+    whatsapp: data.whatsapp,
+    address: data.address,
+    city: data.city,
+    country: data.country,
+    mapEmbedUrl: data.mapEmbedUrl || null,
+    businessHours: data.businessHours,
+    socials: data.socials,
+    stats: data.stats,
+    branches: data.branches,
+    contractHistory: data.contractHistory,
+    seoTitle: data.seoTitle || null,
+    seoDescription: data.seoDescription || null,
+    logoUrl,
+    logoInverseUrl,
+    faviconUrl,
+  };
+
+  const saved = existing
+    ? await prisma.company.update({ where: { id: existing.id }, data: companyData })
+    : await prisma.company.create({ data: companyData });
 
   await logAudit({
     actorEmail: admin.email!,
-    action: "UPDATE",
+    action: existing ? "UPDATE" : "CREATE",
     entityType: "Company",
-    entityId: existing.id,
+    entityId: saved.id,
   });
 
   revalidatePath("/", "layout");
 
-  return { success: true, message: "Company settings updated." };
+  return { success: true, message: existing ? "Company settings updated." : "Company profile created." };
 }
