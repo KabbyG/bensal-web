@@ -110,7 +110,7 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
           </a>
           <ThemeToggle />
           <Button asChild variant="accent" size="sm">
-            <Link href="/contact">Get a Quote</Link>
+            <Link href="/contact">Contact Us</Link>
           </Button>
         </div>
 
@@ -172,7 +172,7 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
                   {company.phone}
                 </a>
                 <Button asChild variant="accent" className="w-full">
-                  <Link href="/contact">Get a Quote</Link>
+                  <Link href="/contact">Contact Us</Link>
                 </Button>
               </div>
             </SheetContent>

@@ -73,7 +73,7 @@ export function Hero({ company }: { company: Company }) {
           >
             <Button asChild variant="accent" size="lg">
               <Link href="/contact">
-                Get a Quote <ArrowRight className="h-4 w-4" />
+                Contact Us <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="glass" size="lg">
