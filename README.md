@@ -129,7 +129,7 @@ docker/          Dockerfile (multi-stage: deps → build → migrator / runner)
 
 - Never commit `.env`. Rotate `NEXTAUTH_SECRET` and the seeded admin password before going to
   production.
-- File uploads are validated by MIME type and size (20MB max) before being written to disk.
+- File uploads are validated by MIME type and size (3MB max — kept under Vercel's hard 4.5MB serverless request body limit, see next.config.ts) before being written to disk.
 - Server actions are rate-limited per IP (in-memory — swap for Redis if you scale beyond a
   single instance).
 - `middleware.ts` sets baseline security headers (CSP, X-Frame-Options, etc.) and protects

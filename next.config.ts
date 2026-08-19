@@ -12,6 +12,20 @@ const nextConfig: NextConfig = {
   // Next copies the whole package (data files included) into the standalone
   // output instead of trying to inline it.
   serverExternalPackages: ["pdfkit"],
+  // Next.js Server Actions cap the request body at 1MB by default, and the
+  // contact/career forms submit file attachments straight through a
+  // "use server" action — so any attachment over 1MB was being rejected
+  // before saveUpload() ever ran. Raised, but capped at 4MB rather than
+  // MAX_UPLOAD_SIZE_MB: Vercel enforces a hard, non-configurable 4.5MB
+  // request body limit on serverless functions (a platform limit, not a
+  // Next.js one), so anything closer to that just fails with a raw 413
+  // instead of a clean validation error. 4MB leaves headroom under that
+  // ceiling for the rest of the form's fields and multipart overhead.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "4mb",
+    },
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },

@@ -97,7 +97,7 @@ export function ContactForm() {
 
         <div className="space-y-1.5">
           <Label htmlFor="attachment">
-            Attachment <span className="font-normal text-muted-foreground">(optional, max 20MB)</span>
+            Attachment <span className="font-normal text-muted-foreground">(optional, max 3MB)</span>
           </Label>
           <label
             htmlFor="attachment"

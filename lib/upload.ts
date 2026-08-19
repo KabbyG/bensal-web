@@ -17,7 +17,11 @@ const ALLOWED_MIME_TYPES = new Set([
 
 const IMAGE_MIME_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "image/svg+xml", "image/gif"]);
 
-const MAX_SIZE_BYTES = Number(process.env.MAX_UPLOAD_SIZE_MB ?? 20) * 1024 * 1024;
+// Vercel caps serverless function request bodies at a hard, non-configurable
+// 4.5MB — see the bodySizeLimit comment in next.config.ts. 3MB per file
+// leaves room for the rest of the form's fields (and, on the career form,
+// more than one file in the same submission) to stay under that ceiling.
+const MAX_SIZE_BYTES = Number(process.env.MAX_UPLOAD_SIZE_MB ?? 3) * 1024 * 1024;
 
 export class UploadValidationError extends Error {}
 
@@ -30,7 +34,7 @@ function validate(file: File, allowed: Set<string>, message: string) {
     throw new UploadValidationError("The uploaded file is empty.");
   }
   if (file.size > MAX_SIZE_BYTES) {
-    throw new UploadValidationError(`File exceeds the ${process.env.MAX_UPLOAD_SIZE_MB ?? 20}MB limit.`);
+    throw new UploadValidationError(`File exceeds the ${process.env.MAX_UPLOAD_SIZE_MB ?? 3}MB limit.`);
   }
   if (!allowed.has(file.type)) {
     throw new UploadValidationError(message);

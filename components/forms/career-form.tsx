@@ -11,21 +11,36 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
+// Vercel enforces a hard, non-configurable 4.5MB request body limit on
+// serverless functions, and next.config.ts caps Server Actions at 4MB to
+// stay under it — see the comments there. The career form can submit a CV
+// plus several certificates in one request, so unlike the contact form's
+// single attachment, per-file validation alone isn't enough: this checks
+// the combined size client-side before submitting, so applicants get a
+// clear message instead of a raw server error.
+const MAX_TOTAL_ATTACHMENT_BYTES = 3.5 * 1024 * 1024;
+
 export function CareerForm({ jobPostingId, jobTitle }: { jobPostingId?: string; jobTitle?: string }) {
   const [pending, startTransition] = useTransition();
   const [done, setDone] = React.useState(false);
-  const [cvName, setCvName] = React.useState<string | null>(null);
-  const [certNames, setCertNames] = React.useState<string[]>([]);
+  const [cvFile, setCvFile] = React.useState<File | null>(null);
+  const [certFiles, setCertFiles] = React.useState<File[]>([]);
   const formRef = React.useRef<HTMLFormElement>(null);
 
   function handleSubmit(formData: FormData) {
+    const totalBytes = (cvFile?.size ?? 0) + certFiles.reduce((sum, f) => sum + f.size, 0);
+    if (totalBytes > MAX_TOTAL_ATTACHMENT_BYTES) {
+      toast.error("Your CV and certificates together exceed 3.5MB. Please remove or compress some files.");
+      return;
+    }
+
     startTransition(async () => {
       const result = await submitJobApplication(formData);
       if (result.success) {
         toast.success(result.message);
         formRef.current?.reset();
-        setCvName(null);
-        setCertNames([]);
+        setCvFile(null);
+        setCertFiles([]);
         setDone(true);
         setTimeout(() => setDone(false), 4000);
       } else {
@@ -81,13 +96,13 @@ export function CareerForm({ jobPostingId, jobTitle }: { jobPostingId?: string; 
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="c-cv">CV / Resume (PDF, DOC, DOCX — max 20MB)</Label>
+          <Label htmlFor="c-cv">CV / Resume (PDF, DOC, DOCX — max 3MB)</Label>
           <label
             htmlFor="c-cv"
             className="flex h-12 cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border px-4 text-sm text-muted-foreground transition-colors hover:border-accent hover:text-accent"
           >
             <Upload className="h-4 w-4" />
-            {cvName ?? "Choose file..."}
+            {cvFile?.name ?? "Choose file..."}
           </label>
           <input
             id="c-cv"
@@ -96,18 +111,23 @@ export function CareerForm({ jobPostingId, jobTitle }: { jobPostingId?: string; 
             required
             accept=".pdf,.doc,.docx"
             className="hidden"
-            onChange={(e) => setCvName(e.target.files?.[0]?.name ?? null)}
+            onChange={(e) => setCvFile(e.target.files?.[0] ?? null)}
           />
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="c-certs">Certificates (optional, multiple allowed)</Label>
+          <Label htmlFor="c-certs">
+            Certificates{" "}
+            <span className="font-normal text-muted-foreground">
+              (optional, multiple allowed — 3MB each, 3.5MB total with CV)
+            </span>
+          </Label>
           <label
             htmlFor="c-certs"
             className="flex h-12 cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border px-4 text-sm text-muted-foreground transition-colors hover:border-accent hover:text-accent"
           >
             <Upload className="h-4 w-4" />
-            {certNames.length > 0 ? `${certNames.length} file(s) selected` : "Choose files..."}
+            {certFiles.length > 0 ? `${certFiles.length} file(s) selected` : "Choose files..."}
           </label>
           <input
             id="c-certs"
@@ -116,7 +136,7 @@ export function CareerForm({ jobPostingId, jobTitle }: { jobPostingId?: string; 
             multiple
             accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
             className="hidden"
-            onChange={(e) => setCertNames(Array.from(e.target.files ?? []).map((f) => f.name))}
+            onChange={(e) => setCertFiles(Array.from(e.target.files ?? []))}
           />
         </div>
 
