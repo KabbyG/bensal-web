@@ -78,16 +78,16 @@ export function CareerForm({ jobPostingId, jobTitle }: { jobPostingId?: string; 
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="c-fullName">Full name</Label>
+            <Label htmlFor="c-fullName" required>Full name</Label>
             <Input id="c-fullName" name="fullName" required />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="c-phone">Phone</Label>
+            <Label htmlFor="c-phone" required>Phone</Label>
             <Input id="c-phone" name="phone" required />
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="c-email">Email</Label>
+          <Label htmlFor="c-email" required>Email</Label>
           <Input id="c-email" name="email" type="email" required />
         </div>
         <div className="space-y-1.5">
@@ -96,7 +96,7 @@ export function CareerForm({ jobPostingId, jobTitle }: { jobPostingId?: string; 
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="c-cv">CV / Resume (PDF, DOC, DOCX — max 3MB)</Label>
+          <Label htmlFor="c-cv" required>CV / Resume (PDF, DOC, DOCX — max 3MB)</Label>
           <label
             htmlFor="c-cv"
             className="flex h-12 cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border px-4 text-sm text-muted-foreground transition-colors hover:border-accent hover:text-accent"
@@ -139,6 +139,10 @@ export function CareerForm({ jobPostingId, jobTitle }: { jobPostingId?: string; 
             onChange={(e) => setCertFiles(Array.from(e.target.files ?? []))}
           />
         </div>
+
+        <p className="text-xs text-muted-foreground">
+          <span className="text-red-500">*</span> Required field
+        </p>
 
         <Button type="submit" variant="accent" className="w-full" disabled={pending}>
           {pending ? "Submitting..." : "Submit Application"}

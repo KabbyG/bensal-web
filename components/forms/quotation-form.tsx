@@ -70,7 +70,7 @@ export function QuotationForm({ presetItem }: { presetItem: string }) {
         />
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="q-fullName">Full name</Label>
+            <Label htmlFor="q-fullName" required>Full name</Label>
             <Input id="q-fullName" name="fullName" required />
           </div>
           <div className="space-y-1.5">
@@ -80,7 +80,7 @@ export function QuotationForm({ presetItem }: { presetItem: string }) {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="q-email">Email</Label>
+            <Label htmlFor="q-email" required>Email</Label>
             <Input id="q-email" name="email" type="email" required />
           </div>
           <div className="space-y-1.5">
@@ -89,9 +89,13 @@ export function QuotationForm({ presetItem }: { presetItem: string }) {
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="q-details">Details</Label>
+          <Label htmlFor="q-details" required>Details</Label>
           <Textarea id="q-details" name="details" required placeholder={`I'm interested in ${presetItem}...`} />
         </div>
+        <p className="text-xs text-muted-foreground">
+          <span className="text-red-500">*</span> Required field
+        </p>
+
         <Button type="submit" variant="accent" className="w-full" disabled={pending}>
           {pending ? "Sending..." : "Send Request"}
         </Button>

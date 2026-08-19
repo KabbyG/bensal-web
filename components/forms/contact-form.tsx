@@ -65,7 +65,7 @@ export function ContactForm() {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="fullName">Full name</Label>
+            <Label htmlFor="fullName" required>Full name</Label>
             <Input id="fullName" name="fullName" required placeholder="Jane Doe" />
           </div>
           <div className="space-y-1.5">
@@ -76,7 +76,7 @@ export function ContactForm() {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" required>Email</Label>
             <Input id="email" name="email" type="email" required placeholder="jane@example.com" />
           </div>
           <div className="space-y-1.5">
@@ -86,12 +86,12 @@ export function ContactForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="subject">Subject</Label>
+          <Label htmlFor="subject" required>Subject</Label>
           <Input id="subject" name="subject" required placeholder="How can we help?" />
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="message">Message</Label>
+          <Label htmlFor="message" required>Message</Label>
           <Textarea id="message" name="message" required rows={5} placeholder="Tell us more about your request..." />
         </div>
 
@@ -115,6 +115,10 @@ export function ContactForm() {
             onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
           />
         </div>
+
+        <p className="text-xs text-muted-foreground">
+          <span className="text-red-500">*</span> Required field
+        </p>
 
         <Button type="submit" variant="accent" size="lg" className="w-full" disabled={pending}>
           {pending ? "Sending..." : "Send Message"}
