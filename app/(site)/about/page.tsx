@@ -22,7 +22,7 @@ export default async function AboutPage() {
         eyebrow="About Bensal"
         title="Built on trust, driven by quality"
         description={`A privately owned Tanzanian business corporation, established in ${company.foundedYear}.`}
-        crumb="About"
+        crumb="Our Journey"
       />
 
       <Section>

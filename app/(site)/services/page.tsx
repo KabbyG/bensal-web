@@ -22,7 +22,7 @@ export default async function ServicesPage() {
         eyebrow="What we do"
         title="Services built for reliability"
         description="Four service lines delivered with professionalism and compliance, across Tanzania."
-        crumb="Services"
+        crumb="Capabilities"
       />
 
       <Section>

@@ -25,7 +25,7 @@ export default async function ContactPage() {
         eyebrow="Get in touch"
         title="We'd love to hear from you"
         description="Reach out for quotations, service inquiries, or general questions."
-        crumb="Contact"
+        crumb="Let's Talk"
       />
 
       <Section>

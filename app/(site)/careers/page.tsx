@@ -28,7 +28,7 @@ export default async function CareersPage() {
         eyebrow="Join us"
         title="Build your career with Bensal"
         description="We're a growing team of 50+ professionals across Tanzania. Explore open roles or send a general application."
-        crumb="Careers"
+        crumb="Opportunities"
       />
 
       <Section>
