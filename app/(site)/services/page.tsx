@@ -19,8 +19,8 @@ export default async function ServicesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="What we do"
-        title="Services built for reliability"
+        eyebrow="What We're Capable Of ⭐"
+        title="Capabilities that keep your business moving"
         description="Four service lines delivered with professionalism and compliance, across Tanzania."
         crumb="Capabilities"
       />
