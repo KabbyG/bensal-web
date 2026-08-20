@@ -20,7 +20,7 @@ export default async function ServicesPage() {
     <>
       <PageHeader
         eyebrow="What We're Capable Of ⭐"
-        title="Capabilities that keep your business moving"
+        title="Services that keep your business moving"
         description="Four service lines delivered with professionalism and compliance, across Tanzania."
         crumb="Capabilities"
       />
