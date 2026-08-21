@@ -60,9 +60,10 @@ export default async function ServiceDetailPage({
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10 text-accent">
               <Icon className="h-8 w-8" />
             </div>
-            <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
-              {service.description}
-            </p>
+            <div
+              className="prose prose-neutral prose-lg mt-8 max-w-none dark:prose-invert"
+              dangerouslySetInnerHTML={{ __html: service.description }}
+            />
 
             <div className="mt-10 flex flex-wrap gap-4">
               <Button asChild variant="accent" size="lg">
