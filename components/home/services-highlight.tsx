@@ -16,15 +16,18 @@ export function ServicesHighlight({ services }: { services: Service[] }) {
             What we do
           </span>
           <h2 className="mt-3 font-display text-3xl font-bold text-balance sm:text-4xl">
-            Four service lines, one dependable partner
+            Five service lines, one dependable partner
           </h2>
         </FadeIn>
 
-        <Stagger className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <Stagger className="mt-14 flex flex-wrap justify-center gap-6">
           {services.map((service) => {
             const Icon = getIcon(service.icon);
             return (
-              <StaggerItem key={service.id}>
+              <StaggerItem
+                key={service.id}
+                className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]"
+              >
                 <Link
                   href={`/services/${service.slug}`}
                   className="group flex h-full flex-col rounded-2xl border border-border bg-card p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10"

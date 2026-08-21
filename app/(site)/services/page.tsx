@@ -10,7 +10,7 @@ import { Stagger, StaggerItem } from "@/components/motion/fade-in";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Cleaning & Gardening, Fumigation & Pest Control, Electronics & ICT Equipment Supply, and Building Materials Supply — Bensal Investment Co. Ltd.",
+    "Cleaning & Gardening, Fumigation & Pest Control, Electronics & ICT Equipment Supply, Building Materials Supply, and Cleaning Materials Supply — Bensal Investment Co. Ltd.",
 };
 
 export default async function ServicesPage() {
@@ -21,17 +21,17 @@ export default async function ServicesPage() {
       <PageHeader
         eyebrow="What We're Capable Of ⭐"
         title="Services that keep your business moving"
-        description="Four service lines delivered with professionalism and compliance, across Tanzania."
+        description="Five service lines delivered with professionalism and compliance, across Tanzania."
         crumb="Capabilities"
       />
 
       <Section>
         <Container>
-          <Stagger className="grid gap-8 sm:grid-cols-2">
+          <Stagger className="flex flex-wrap justify-center gap-8">
             {services.map((service) => {
               const Icon = getIcon(service.icon);
               return (
-                <StaggerItem key={service.id}>
+                <StaggerItem key={service.id} className="w-full sm:w-[calc(50%-1rem)]">
                   <Link
                     href={`/services/${service.slug}`}
                     className="group flex h-full flex-col rounded-3xl border border-border bg-card p-10 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10"

@@ -13,6 +13,7 @@ import {
   Users,
   Globe,
   Zap,
+  SprayCan,
   type LucideIcon,
 } from "lucide-react";
 
@@ -31,6 +32,7 @@ export const iconMap: Record<string, LucideIcon> = {
   Users,
   Globe,
   Zap,
+  SprayCan,
 };
 
 export function getIcon(key: string): LucideIcon {

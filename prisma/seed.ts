@@ -126,6 +126,16 @@ async function main() {
       icon: "Building2",
       order: 3,
     },
+    {
+      slug: "cleaning-materials-supply",
+      title: "Supply of Cleaning Materials",
+      shortDescription:
+        "Detergents, disinfectants, and everyday cleaning supplies delivered in bulk to offices, hotels, and institutions.",
+      description:
+        "Beyond our cleaning services, we also supply the materials behind them — detergents, disinfectants, tissue and hygiene products, and general cleaning consumables — delivered in bulk so offices, hotels, and institutions always have what they need on hand without chasing multiple suppliers.",
+      icon: "SprayCan",
+      order: 4,
+    },
   ];
 
   for (const service of services) {
