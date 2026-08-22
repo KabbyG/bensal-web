@@ -86,7 +86,7 @@ export function Partners() {
                 alt={logo.alt}
                 fill
                 sizes="192px"
-                className="object-contain p-4 opacity-80 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:p-5"
+                className="object-contain p-4 sm:p-5"
               />
             </div>
           ))}
