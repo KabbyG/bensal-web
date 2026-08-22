@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Container, Section } from "@/components/ui/container";
 import { FadeIn, Stagger, StaggerItem } from "@/components/motion/fade-in";
 import { Card, CardContent } from "@/components/ui/card";
+import { NestBusinessLineDialog } from "@/components/about/nest-business-line-dialog";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -35,6 +36,11 @@ export default async function AboutPage() {
               A decade of dependable service
             </h2>
             <p className="mt-5 leading-relaxed text-muted-foreground">{company.description}</p>
+            <p className="mt-4 leading-relaxed text-muted-foreground">
+              Discover the confidence behind our work.{" "}
+              <NestBusinessLineDialog>Download our Nest Business Line</NestBusinessLineDialog> and
+              learn more about who we are and what we stand for.
+            </p>
           </FadeIn>
 
           <FadeIn delay={0.1} className="grid gap-6 sm:grid-cols-2">
