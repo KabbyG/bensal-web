@@ -101,7 +101,7 @@ export function Footer({ company, links }: { company: Company; links: NavLink[] 
           <p>
             &copy; {year} {company.legalName}. All rights reserved.
           </p>
-          <p className="sm:text-center">Created by Yok Tech Africa</p>
+          <p className="sm:text-center">Developed by Yok Tech Africa</p>
           <div className="flex gap-5 sm:justify-end">
             <Link href="/privacy-policy" className="hover:text-accent">
               Privacy Policy
