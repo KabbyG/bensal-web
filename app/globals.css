@@ -251,4 +251,50 @@
       transform: translateY(0);
     }
   }
+
+  /* Collapsible item lists inside rich-text descriptions (native
+     <details>/<summary>), styled with a rotating chevron instead of the
+     default browser marker. */
+  .prose details {
+    margin-top: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0 1rem;
+  }
+
+  .prose details summary {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0.875rem 0;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .prose details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .prose details summary::after {
+    content: "";
+    flex-shrink: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-left: 1rem;
+    border-right: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+  }
+
+  .prose details[open] summary::after {
+    transform: rotate(-135deg);
+  }
+
+  .prose details ul {
+    margin-top: 0;
+    padding-bottom: 1rem;
+  }
 }
