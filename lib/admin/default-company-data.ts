@@ -52,16 +52,22 @@ export const DEFAULT_COMPANY_DATA = {
     "Arusha",
     "Kilimanjaro",
   ],
-  // Contract-volume infographic from the profile. Years/series left as
-  // `null` where the source did not state an exact figure.
+  // Contract-volume infographic — annual counts per service line, 2015
+  // through the current pipeline year. Years/series left as `null` where a
+  // figure isn't known.
   contractHistory: [
-    { year: 2019, cleaning: 0, fumigation: 7 },
-    { year: 2020, cleaning: 7, fumigation: 5 },
-    { year: 2021, cleaning: 9, fumigation: null },
-    { year: 2022, cleaning: 8, fumigation: 6 },
-    { year: 2023, cleaning: null, fumigation: 6 },
-    { year: 2024, cleaning: null, fumigation: 6 },
-    { year: 2025, cleaning: 6, fumigation: 2 },
+    { year: 2015, cleaning: 2, fumigation: 4, ictEquipment: 0, buildingMaterials: 1, cleaningProducts: 1 },
+    { year: 2016, cleaning: 2, fumigation: 9, ictEquipment: 0, buildingMaterials: 5, cleaningProducts: 2 },
+    { year: 2017, cleaning: 5, fumigation: 14, ictEquipment: 0, buildingMaterials: 8, cleaningProducts: 2 },
+    { year: 2018, cleaning: 10, fumigation: 15, ictEquipment: 3, buildingMaterials: 7, cleaningProducts: 5 },
+    { year: 2019, cleaning: 9, fumigation: 14, ictEquipment: 2, buildingMaterials: 5, cleaningProducts: 3 },
+    { year: 2020, cleaning: 16, fumigation: 11, ictEquipment: 5, buildingMaterials: 9, cleaningProducts: 2 },
+    { year: 2021, cleaning: 19, fumigation: 8, ictEquipment: 5, buildingMaterials: 9, cleaningProducts: 4 },
+    { year: 2022, cleaning: 20, fumigation: 13, ictEquipment: 8, buildingMaterials: 7, cleaningProducts: 5 },
+    { year: 2023, cleaning: 25, fumigation: 18, ictEquipment: 8, buildingMaterials: 12, cleaningProducts: 7 },
+    { year: 2024, cleaning: 28, fumigation: 22, ictEquipment: 5, buildingMaterials: 12, cleaningProducts: 6 },
+    { year: 2025, cleaning: 34, fumigation: 14, ictEquipment: 9, buildingMaterials: 8, cleaningProducts: 8 },
+    { year: 2026, cleaning: 38, fumigation: 15, ictEquipment: 15, buildingMaterials: 13, cleaningProducts: 11 },
   ],
   logoUrl: "/brand/logo.png",
   logoInverseUrl: "/brand/logo-inverse.png",

@@ -18,7 +18,22 @@ import { TagInput } from "@/components/admin/tag-input";
 
 type BusinessHour = { day: string; open: string; close: string };
 type Stat = { label: string; value: number; suffix?: string };
-type ContractPoint = { year: number; cleaning: number | null; fumigation: number | null };
+type ContractPoint = {
+  year: number;
+  cleaning: number | null;
+  fumigation: number | null;
+  ictEquipment: number | null;
+  buildingMaterials: number | null;
+  cleaningProducts: number | null;
+};
+
+const CONTRACT_SERIES: { key: keyof Omit<ContractPoint, "year">; label: string }[] = [
+  { key: "cleaning", label: "Cleaning & Gardening" },
+  { key: "fumigation", label: "Fumigation & Pest Control" },
+  { key: "ictEquipment", label: "Supply of ICT Equipment" },
+  { key: "buildingMaterials", label: "Supply of Building Materials" },
+  { key: "cleaningProducts", label: "Supply of Cleaning Products" },
+];
 
 const SOCIAL_KEYS = ["facebook", "instagram", "linkedin", "twitter"] as const;
 
@@ -127,47 +142,75 @@ function SocialsEditor({ name, defaultValue }: { name: string; defaultValue: Rec
 
 function ContractHistoryEditor({ name, defaultValue }: { name: string; defaultValue: ContractPoint[] }) {
   const [rows, setRows] = React.useState<ContractPoint[]>(defaultValue);
+
+  function updateRow(i: number, patch: Partial<ContractPoint>) {
+    setRows((r) => r.map((x, idx) => (idx === i ? { ...x, ...patch } : x)));
+  }
+
+  function addYear() {
+    const nextYear = rows.length ? Math.max(...rows.map((r) => r.year)) + 1 : new Date().getFullYear();
+    setRows((r) => [
+      ...r,
+      {
+        year: nextYear,
+        cleaning: 0,
+        fumigation: 0,
+        ictEquipment: 0,
+        buildingMaterials: 0,
+        cleaningProducts: 0,
+      },
+    ]);
+  }
+
   return (
-    <div className="space-y-2">
-      {rows.map((row, i) => (
-        <div key={i} className="flex gap-2">
-          <Input
-            placeholder="Year"
-            type="number"
-            value={row.year}
-            onChange={(e) => setRows((r) => r.map((x, idx) => (idx === i ? { ...x, year: Number(e.target.value) } : x)))}
-          />
-          <Input
-            placeholder="Cleaning contracts"
-            type="number"
-            value={row.cleaning ?? ""}
-            onChange={(e) =>
-              setRows((r) =>
-                r.map((x, idx) => (idx === i ? { ...x, cleaning: e.target.value ? Number(e.target.value) : null } : x))
-              )
-            }
-          />
-          <Input
-            placeholder="Fumigation contracts"
-            type="number"
-            value={row.fumigation ?? ""}
-            onChange={(e) =>
-              setRows((r) =>
-                r.map((x, idx) => (idx === i ? { ...x, fumigation: e.target.value ? Number(e.target.value) : null } : x))
-              )
-            }
-          />
-          <Button type="button" variant="outline" size="icon" onClick={() => setRows((r) => r.filter((_, idx) => idx !== i))}>
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ))}
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={() => setRows((r) => [...r, { year: new Date().getFullYear(), cleaning: 0, fumigation: 0 }])}
-      >
+    <div className="space-y-3">
+      <p className="text-xs text-muted-foreground">
+        One row per financial year. Leave a service blank if that year has no figure — the chart line skips it
+        instead of dropping to zero.
+      </p>
+      <div className="hidden gap-2 px-1 text-xs font-medium text-muted-foreground sm:grid sm:grid-cols-[5rem_repeat(5,1fr)_2.5rem]">
+        <span>Year</span>
+        {CONTRACT_SERIES.map((s) => (
+          <span key={s.key}>{s.label}</span>
+        ))}
+        <span />
+      </div>
+      {rows
+        .map((row, i) => ({ row, i }))
+        .sort((a, b) => a.row.year - b.row.year)
+        .map(({ row, i }) => (
+          <div key={i} className="grid grid-cols-2 gap-2 rounded-lg border border-border p-2 sm:grid-cols-[5rem_repeat(5,1fr)_2.5rem] sm:border-0 sm:p-0">
+            <Input
+              aria-label="Year"
+              placeholder="Year"
+              type="number"
+              value={row.year}
+              onChange={(e) => updateRow(i, { year: Number(e.target.value) })}
+            />
+            {CONTRACT_SERIES.map((s) => (
+              <Input
+                key={s.key}
+                aria-label={s.label}
+                placeholder={s.label}
+                type="number"
+                min={0}
+                value={row[s.key] ?? ""}
+                onChange={(e) => updateRow(i, { [s.key]: e.target.value ? Number(e.target.value) : null })}
+              />
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="col-span-2 sm:col-span-1"
+              onClick={() => setRows((r) => r.filter((_, idx) => idx !== i))}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="sm:hidden">Remove row</span>
+            </Button>
+          </div>
+        ))}
+      <Button type="button" variant="outline" size="sm" onClick={addYear}>
         <Plus className="h-3.5 w-3.5" /> Add year
       </Button>
       <input type="hidden" name={name} value={JSON.stringify(rows)} readOnly />

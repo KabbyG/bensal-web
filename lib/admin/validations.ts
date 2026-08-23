@@ -20,6 +20,9 @@ export const contractHistoryPointSchema = z.object({
   year: z.coerce.number(),
   cleaning: z.coerce.number().nullable(),
   fumigation: z.coerce.number().nullable(),
+  ictEquipment: z.coerce.number().nullable(),
+  buildingMaterials: z.coerce.number().nullable(),
+  cleaningProducts: z.coerce.number().nullable(),
 });
 
 export const companySchema = z.object({

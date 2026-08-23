@@ -68,7 +68,7 @@ model Company {
   socials         Json // { facebook, instagram, linkedin, twitter, ... }
   stats           Json // [{ label, value, suffix }]
   branches        String[]
-  contractHistory Json // [{ year, cleaning, fumigation }]
+  contractHistory Json // [{ year, cleaning, fumigation, ictEquipment, buildingMaterials, cleaningProducts }]
 
   logoUrl        String?
   logoInverseUrl String?

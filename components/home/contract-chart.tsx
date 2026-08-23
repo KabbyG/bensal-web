@@ -14,7 +14,14 @@ import type { Company } from "@/lib/generated/prisma/client";
 import { Container, Section } from "@/components/ui/container";
 import { FadeIn } from "@/components/motion/fade-in";
 
-type Point = { year: number; cleaning: number | null; fumigation: number | null };
+type Point = {
+  year: number;
+  cleaning: number | null;
+  fumigation: number | null;
+  ictEquipment: number | null;
+  buildingMaterials: number | null;
+  cleaningProducts: number | null;
+};
 
 export function ContractChart({ company }: { company: Company }) {
   const data = company.contractHistory as unknown as Point[];
@@ -30,7 +37,7 @@ export function ContractChart({ company }: { company: Company }) {
             Active contracts, {data[0]?.year}–{data[data.length - 1]?.year}
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Annual contract volume across our two longest-running service lines.
+            Annual contract volume across our core service and supply lines.
           </p>
         </FadeIn>
 
@@ -53,7 +60,7 @@ export function ContractChart({ company }: { company: Company }) {
                 type="monotone"
                 dataKey="cleaning"
                 name="Cleaning & Gardening"
-                stroke="var(--brand-green)"
+                stroke="var(--chart-cleaning)"
                 strokeWidth={3}
                 dot={{ r: 4 }}
                 connectNulls
@@ -62,7 +69,34 @@ export function ContractChart({ company }: { company: Company }) {
                 type="monotone"
                 dataKey="fumigation"
                 name="Fumigation & Pest Control"
-                stroke="var(--brand-forest)"
+                stroke="var(--chart-fumigation)"
+                strokeWidth={3}
+                dot={{ r: 4 }}
+                connectNulls
+              />
+              <Line
+                type="monotone"
+                dataKey="ictEquipment"
+                name="Supply of ICT Equipment"
+                stroke="var(--chart-ict)"
+                strokeWidth={3}
+                dot={{ r: 4 }}
+                connectNulls
+              />
+              <Line
+                type="monotone"
+                dataKey="buildingMaterials"
+                name="Supply of Building Materials"
+                stroke="var(--chart-building-materials)"
+                strokeWidth={3}
+                dot={{ r: 4 }}
+                connectNulls
+              />
+              <Line
+                type="monotone"
+                dataKey="cleaningProducts"
+                name="Supply of Cleaning Products"
+                stroke="var(--chart-cleaning-products)"
                 strokeWidth={3}
                 dot={{ r: 4 }}
                 connectNulls

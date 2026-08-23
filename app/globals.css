@@ -31,6 +31,15 @@
   --card-foreground: var(--foreground);
 
   --radius: 1rem;
+
+  /* Contract-history chart series — brand greens for the two original
+     service lines, non-brand hues (blue/orange/violet) for the newer
+     lines so a 5-way legend still reads as distinct at a glance. */
+  --chart-cleaning: var(--brand-green);
+  --chart-fumigation: var(--brand-forest);
+  --chart-ict: #2a78d6;
+  --chart-building-materials: #eb6834;
+  --chart-cleaning-products: #4a3aa7;
 }
 
 .dark {
@@ -51,6 +60,13 @@
 
   --card: #0d1f19;
   --card-foreground: var(--foreground);
+
+  /* Same series, stepped for legibility on the dark card surface. */
+  --chart-cleaning: var(--brand-green);
+  --chart-fumigation: var(--brand-forest-light);
+  --chart-ict: #3987e5;
+  --chart-building-materials: #d95926;
+  --chart-cleaning-products: #9085e9;
 }
 
 @theme inline {
@@ -77,6 +93,12 @@
   --color-brand-forest: var(--brand-forest);
   --color-brand-forest-light: var(--brand-forest-light);
   --color-brand-gray: var(--brand-gray);
+
+  --color-chart-cleaning: var(--chart-cleaning);
+  --color-chart-fumigation: var(--chart-fumigation);
+  --color-chart-ict: var(--chart-ict);
+  --color-chart-building-materials: var(--chart-building-materials);
+  --color-chart-cleaning-products: var(--chart-cleaning-products);
 
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
