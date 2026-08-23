@@ -21,7 +21,7 @@ export function Cta({ company }: { company: Company }) {
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Button asChild variant="accent" size="lg">
                 <Link href="/contact">
-                  Request a Quote <ArrowRight className="h-4 w-4" />
+                  Let's Talk <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
               <Button asChild variant="glass" size="lg">
