@@ -80,17 +80,78 @@ async function persist(file: File, folder: string): Promise<string> {
 // partner logo) into the tens-to-low-hundreds of KB actually served.
 const MAX_IMAGE_DIMENSION = 2400;
 
+// Sampled from the logo, same as the CSS custom properties in globals.css.
+const BRAND_FOREST = { r: 11, g: 66, b: 51 }; // --brand-forest
+const BRAND_LEAF = { r: 98, g: 184, b: 62 }; // --brand-green
+
+function radialGlowSvg(w: number, h: number) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+    <defs>
+      <radialGradient id="g" cx="18%" cy="12%" r="65%">
+        <stop offset="0%" stop-color="rgb(${BRAND_LEAF.r},${BRAND_LEAF.g},${BRAND_LEAF.b})" stop-opacity="0.28" />
+        <stop offset="100%" stop-color="rgb(${BRAND_LEAF.r},${BRAND_LEAF.g},${BRAND_LEAF.b})" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#g)" />
+  </svg>`;
+}
+
+function vignetteSvg(w: number, h: number) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+    <defs>
+      <radialGradient id="v" cx="50%" cy="46%" r="78%">
+        <stop offset="60%" stop-color="black" stop-opacity="0" />
+        <stop offset="100%" stop-color="black" stop-opacity="0.22" />
+      </radialGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#v)" />
+  </svg>`;
+}
+
+/**
+ * Pushes a photo toward the brand palette: a luminance-preserving tint
+ * toward forest green blended back at partial strength (so a photo's own
+ * colors — a yellow bucket, a red mop handle — stay legible instead of
+ * going monochrome), a soft leaf-green glow, and a light vignette for
+ * depth. Same recipe used to grade the Cleaning & Gardening cover photo,
+ * now applied to every capability/service image automatically so the
+ * whole set stays visually consistent without a manual editing step.
+ */
+async function applyBrandGrade(pipeline: ReturnType<typeof sharp>): Promise<ReturnType<typeof sharp>> {
+  const { width, height } = await pipeline.clone().metadata();
+  if (!width || !height) return pipeline;
+
+  const [tintedLayer, glowLayer, vignetteLayer] = await Promise.all([
+    pipeline.clone().tint(BRAND_FOREST).ensureAlpha(0.4).png().toBuffer(),
+    sharp(Buffer.from(radialGlowSvg(width, height))).png().toBuffer(),
+    sharp(Buffer.from(vignetteSvg(width, height))).png().toBuffer(),
+  ]);
+
+  return pipeline
+    .composite([
+      { input: tintedLayer, blend: "over" },
+      { input: glowLayer, blend: "screen" },
+      { input: vignetteLayer, blend: "multiply" },
+    ])
+    .modulate({ saturation: 1.12 })
+    .linear(1.06, -10);
+}
+
 /**
  * Re-encodes a raster image at a bounded size and a lossy-but-clean
  * compression level. SVG (vector) and GIF (may be animated) pass through
  * untouched — sharp's raster pipeline isn't the right tool for either.
  */
-async function optimizeImage(buffer: Buffer, mimeType: string): Promise<Buffer> {
+async function optimizeImage(
+  buffer: Buffer,
+  mimeType: string,
+  options?: { brandGrade?: boolean }
+): Promise<Buffer> {
   if (mimeType === "image/svg+xml" || mimeType === "image/gif") {
     return buffer;
   }
 
-  const pipeline = sharp(buffer)
+  let pipeline = sharp(buffer)
     .rotate() // apply EXIF orientation before the metadata that stores it is stripped
     .resize({
       width: MAX_IMAGE_DIMENSION,
@@ -98,6 +159,10 @@ async function optimizeImage(buffer: Buffer, mimeType: string): Promise<Buffer> 
       fit: "inside",
       withoutEnlargement: true,
     });
+
+  if (options?.brandGrade) {
+    pipeline = await applyBrandGrade(pipeline);
+  }
 
   if (mimeType === "image/jpeg") return pipeline.jpeg({ quality: 82, mozjpeg: true }).toBuffer();
   if (mimeType === "image/webp") return pipeline.webp({ quality: 82 }).toBuffer();
@@ -125,7 +190,10 @@ export async function saveImageUpload(file: File, folder: ImageUploadFolder): Pr
 
   const filename = `${randomUUID()}-${sanitizeFilename(file.name)}`;
   const rawBuffer = Buffer.from(await file.arrayBuffer());
-  const optimized = await optimizeImage(rawBuffer, file.type);
+  // Every capability page's cover photo gets graded toward the brand
+  // palette automatically, so new uploads always match the treatment
+  // applied to the existing ones — no manual editing step for admins.
+  const optimized = await optimizeImage(rawBuffer, file.type, { brandGrade: folder === "services" });
 
   return persistBuffer(optimized, filename, folder);
 }

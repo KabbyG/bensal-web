@@ -104,6 +104,7 @@ async function main() {
         "Laundry Services (includes housekeeping, yard/pool care, dry cleaning)",
       ],
       icon: "Sparkles",
+      image: "/uploads/services/cleaning-gardening.jpg",
       order: 0,
     },
     {

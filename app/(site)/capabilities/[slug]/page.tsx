@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -58,6 +59,29 @@ export default async function ServiceDetailPage({
               className="prose prose-neutral prose-lg mt-8 max-w-none dark:prose-invert"
               dangerouslySetInnerHTML={{ __html: service.description }}
             />
+
+            {service.image && (
+              <div className="group relative mt-10">
+                <div
+                  aria-hidden
+                  className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-accent/20 opacity-60 blur-3xl transition-opacity duration-500 group-hover:opacity-90"
+                />
+                <div className="relative aspect-[16/11] w-full overflow-hidden rounded-[2rem] border border-accent/15 bg-surface-muted shadow-xl shadow-black/5 ring-1 ring-black/[0.02]">
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    sizes="(min-width: 1024px) 768px, 100vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-brand-forest/85 via-brand-forest/10 to-transparent" />
+                  <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-brand-forest/70 px-3.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm sm:bottom-5 sm:left-5">
+                    <Icon className="h-3.5 w-3.5 text-brand-green" />
+                    {service.title} in action
+                  </div>
+                </div>
+              </div>
+            )}
 
             {service.items.length > 0 && (
               <div className="mt-8 rounded-2xl border border-border bg-surface-muted p-6 sm:p-8">
