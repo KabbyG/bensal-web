@@ -87,7 +87,7 @@ async function main() {
       shortDescription:
         "Quality cleaning and hygiene solutions for commercial, residential, and industrial needs.",
       description:
-        '<p>We aim to be the best in providing quality cleaning and hygiene solutions for customer satisfaction, covering commercial, residential, and industrial needs.</p><details><summary>Click here to view items</summary><ul><li>Dry germicidal</li><li>Lint removers</li><li>Carbon removing compounds</li><li>Cleaning scrapers</li></ul></details>',
+        "<p>We aim to be the best in providing quality cleaning and hygiene solutions for customer satisfaction, covering commercial, residential, and industrial needs.</p>",
       icon: "Sparkles",
       order: 0,
     },
