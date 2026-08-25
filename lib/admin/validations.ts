@@ -65,6 +65,7 @@ export const serviceSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
   shortDescription: z.string().trim().min(1, "Short description is required"),
   description: z.string().trim().min(1, "Description is required"),
+  items: z.array(z.string().trim().min(1)).default([]),
   icon: z.string().trim().min(1, "Icon is required"),
   order: z.coerce.number().int().default(0),
   isFeatured: z.coerce.boolean().default(true),

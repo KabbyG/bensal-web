@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { TagInput } from "@/components/admin/tag-input";
 
 export function ServiceForm({ service, onSaved }: { service: Service | null; onSaved: () => void }) {
   const [pending, startTransition] = React.useTransition();
@@ -73,6 +74,18 @@ export function ServiceForm({ service, onSaved }: { service: Service | null; onS
       </div>
 
       <RichTextEditor name="description" label="Full description" defaultValue={service?.description ?? ""} />
+
+      <div className="space-y-1.5">
+        <TagInput
+          name="items"
+          label="Items"
+          defaultValue={service?.items ?? []}
+          placeholder="Type an item and press Enter"
+        />
+        <p className="text-xs text-muted-foreground">
+          Shown as a checklist on the public service page. Add as many as you need.
+        </p>
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">

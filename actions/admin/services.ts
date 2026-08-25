@@ -22,6 +22,7 @@ function parseInput(formData: FormData) {
     title: formData.get("title"),
     shortDescription: formData.get("shortDescription"),
     description: formData.get("description"),
+    items: formData.getAll("items"),
     icon: formData.get("icon"),
     order: formData.get("order") ?? 0,
     isFeatured: formData.get("isFeatured"),

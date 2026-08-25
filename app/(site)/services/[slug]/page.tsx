@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getService, getServices } from "@/lib/queries";
 import { safeStaticParams } from "@/lib/safe-static-params";
@@ -58,6 +58,24 @@ export default async function ServiceDetailPage({
               className="prose prose-neutral prose-lg mt-8 max-w-none dark:prose-invert"
               dangerouslySetInnerHTML={{ __html: service.description }}
             />
+
+            {service.items.length > 0 && (
+              <div className="mt-8 rounded-2xl border border-border bg-surface-muted p-6 sm:p-8">
+                <h2 className="font-display text-base font-semibold">
+                  Items included in {service.title}
+                </h2>
+                <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {service.items.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-sm text-muted-foreground">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+                        <Check className="h-3.5 w-3.5" />
+                      </span>
+                      <span className="leading-snug">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </FadeIn>
 
           {otherServices.length > 0 && (

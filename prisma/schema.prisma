@@ -102,6 +102,7 @@ model Service {
   title            String
   shortDescription String
   description      String    @db.Text
+  items            String[]  @default([])
   icon             String // lucide/react-icons key
   image            String?
   order            Int       @default(0)

@@ -88,6 +88,10 @@ async function main() {
         "Quality cleaning and hygiene solutions for commercial, residential, and industrial needs.",
       description:
         "<p>We aim to be the best in providing quality cleaning and hygiene solutions for customer satisfaction, covering commercial, residential, and industrial needs.</p>",
+      items: [
+        "Building and Compound Cleaning Services",
+        "Laundry Services (includes housekeeping, yard/pool care, dry cleaning)",
+      ],
       icon: "Sparkles",
       order: 0,
     },
