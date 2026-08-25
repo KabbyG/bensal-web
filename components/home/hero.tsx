@@ -73,11 +73,11 @@ export function Hero({ company }: { company: Company }) {
           >
             <Button asChild variant="accent" size="lg">
               <Link href="/contact">
-                Contact Us <ArrowRight className="h-4 w-4" />
+                Let&apos;s Talk <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="glass" size="lg">
-              <Link href="/services">Explore Services</Link>
+              <Link href="/services">Our Capabilities</Link>
             </Button>
           </motion.div>
 
