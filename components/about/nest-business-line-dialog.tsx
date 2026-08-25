@@ -6,15 +6,16 @@ import { Download } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-const PDF_SRC = "/documents/bensal-nest-business-line.pdf";
-const PDF_FILENAME = "Bensal-Nest-Business-Line.pdf";
-
 export function NestBusinessLineDialog({
   children,
   className,
+  pdfUrl,
+  pdfName,
 }: {
   children: React.ReactNode;
   className?: string;
+  pdfUrl: string;
+  pdfName?: string | null;
 }) {
   return (
     <Dialog>
@@ -58,14 +59,14 @@ export function NestBusinessLineDialog({
 
         <div className="reveal-on-hover-group relative min-h-0 flex-1 bg-surface-muted">
           <iframe
-            src={`${PDF_SRC}#toolbar=0`}
+            src="/api/nest/pdf#toolbar=0"
             title="Bensal Nest Business Line"
             className="h-full w-full border-0"
           />
 
           <a
-            href={PDF_SRC}
-            download={PDF_FILENAME}
+            href={pdfUrl}
+            download={pdfName ?? true}
             className="reveal-on-hover absolute right-4 top-4 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/30 transition-[opacity,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/40"
           >
             <Download className="h-4 w-4" />

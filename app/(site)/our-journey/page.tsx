@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { Target, Eye, MapPin } from "lucide-react";
-import { getCompany, getLeadership } from "@/lib/queries";
+import { getCompany, getLeadership, getNestProfile } from "@/lib/queries";
 import { PageHeader } from "@/components/layout/page-header";
 import { Container, Section } from "@/components/ui/container";
 import { FadeIn, Stagger, StaggerItem } from "@/components/motion/fade-in";
@@ -14,8 +15,12 @@ export const metadata: Metadata = {
     "Bensal Investment Co. Ltd. — a privately owned Tanzanian business corporation established in 2014, delivering Cleaning & Gardening, Fumigation, and Supply services.",
 };
 
-export default async function AboutPage() {
-  const [company, leadership] = await Promise.all([getCompany(), getLeadership()]);
+export default async function OurJourneyPage() {
+  const [company, leadership, nestProfile] = await Promise.all([
+    getCompany(),
+    getLeadership(),
+    getNestProfile(),
+  ]);
 
   return (
     <>
@@ -38,8 +43,19 @@ export default async function AboutPage() {
             <p className="mt-5 leading-relaxed text-muted-foreground">{company.description}</p>
             <p className="mt-4 leading-relaxed text-muted-foreground">
               Discover the confidence behind our work.{" "}
-              <NestBusinessLineDialog>Download our Nest Business Line</NestBusinessLineDialog> and
-              learn more about who we are and what we stand for.
+              {nestProfile?.pdfUrl ? (
+                <NestBusinessLineDialog pdfUrl={nestProfile.pdfUrl} pdfName={nestProfile.pdfName}>
+                  Download our NeST Business Line
+                </NestBusinessLineDialog>
+              ) : (
+                <Link
+                  href="/nest"
+                  className="font-semibold text-foreground underline decoration-accent/40 decoration-2 underline-offset-4 transition-colors duration-200 hover:text-accent"
+                >
+                  View our NeST Business Line
+                </Link>
+              )}{" "}
+              and learn more about who we are and what we stand for.
             </p>
           </FadeIn>
 
