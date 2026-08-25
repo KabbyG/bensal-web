@@ -37,7 +37,7 @@ export function ContactPreview({ company }: { company: Company }) {
             </div>
           </div>
           <Button asChild variant="accent" className="mt-8">
-            <Link href="/contact">
+            <Link href="/lets-talk">
               Get in Touch <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>

@@ -20,7 +20,7 @@ export function Cta({ company }: { company: Company }) {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Button asChild variant="accent" size="lg">
-                <Link href="/contact">
+                <Link href="/lets-talk">
                   Let&apos;s Talk <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>

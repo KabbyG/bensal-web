@@ -31,6 +31,19 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
+  // Route folders were renamed to match their nav labels (About -> Our
+  // Journey, Services -> Capabilities, Careers -> Opportunities,
+  // Contact -> Let's Talk). Permanent redirects keep any bookmarks or
+  // search-engine links to the old paths working.
+  async redirects() {
+    return [
+      { source: "/about", destination: "/our-journey", permanent: true },
+      { source: "/services", destination: "/capabilities", permanent: true },
+      { source: "/services/:slug", destination: "/capabilities/:slug", permanent: true },
+      { source: "/careers", destination: "/opportunities", permanent: true },
+      { source: "/contact", destination: "/lets-talk", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

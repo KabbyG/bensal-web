@@ -64,8 +64,8 @@ export async function createService(formData: FormData): Promise<ActionResult> {
   });
 
   await logAudit({ actorEmail: admin.email!, action: "CREATE", entityType: "Service", entityId: created.id });
-  revalidatePath("/services");
-  revalidatePath(`/services/${created.slug}`);
+  revalidatePath("/capabilities");
+  revalidatePath(`/capabilities/${created.slug}`);
   revalidatePath("/admin/services");
   return { success: true, message: "Service created." };
 }
@@ -109,9 +109,9 @@ export async function updateService(id: string, formData: FormData): Promise<Act
   });
 
   await logAudit({ actorEmail: admin.email!, action: "UPDATE", entityType: "Service", entityId: id });
-  revalidatePath("/services");
-  revalidatePath(`/services/${existing.slug}`);
-  revalidatePath(`/services/${parsed.data.slug}`);
+  revalidatePath("/capabilities");
+  revalidatePath(`/capabilities/${existing.slug}`);
+  revalidatePath(`/capabilities/${parsed.data.slug}`);
   revalidatePath("/admin/services");
   return { success: true, message: "Service updated." };
 }
@@ -127,8 +127,8 @@ export async function softDeleteService(id: string): Promise<ActionResult> {
 
   const existing = await prisma.service.update({ where: { id }, data: { deletedAt: new Date() } });
   await logAudit({ actorEmail: admin.email!, action: "DELETE", entityType: "Service", entityId: id });
-  revalidatePath("/services");
-  revalidatePath(`/services/${existing.slug}`);
+  revalidatePath("/capabilities");
+  revalidatePath(`/capabilities/${existing.slug}`);
   revalidatePath("/admin/services");
   return { success: true, message: "Moved to trash." };
 }

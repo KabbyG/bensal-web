@@ -190,14 +190,14 @@ async function main() {
   // the navbar/footer to DB-driven menus is a no-op until edited in /admin/menus.
   const defaultLinks = [
     { label: "Home", url: "/" },
-    { label: "About", url: "/about" },
-    { label: "Services", url: "/services" },
+    { label: "Our Journey", url: "/our-journey" },
+    { label: "Capabilities", url: "/capabilities" },
     { label: "Products", url: "/products" },
     { label: "Projects", url: "/projects" },
     { label: "Gallery", url: "/gallery" },
     { label: "News", url: "/news" },
-    { label: "Careers", url: "/careers" },
-    { label: "Contact", url: "/contact" },
+    { label: "Opportunities", url: "/opportunities" },
+    { label: "Let's Talk", url: "/lets-talk" },
   ];
 
   for (const [key, label] of [

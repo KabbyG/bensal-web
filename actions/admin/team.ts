@@ -51,7 +51,7 @@ export async function createTeamMember(formData: FormData): Promise<ActionResult
   });
 
   await logAudit({ actorEmail: admin.email!, action: "CREATE", entityType: "TeamMember", entityId: created.id });
-  revalidatePath("/about");
+  revalidatePath("/our-journey");
   revalidatePath("/admin/team");
   return { success: true, message: "Team member added." };
 }
@@ -85,7 +85,7 @@ export async function updateTeamMember(id: string, formData: FormData): Promise<
   });
 
   await logAudit({ actorEmail: admin.email!, action: "UPDATE", entityType: "TeamMember", entityId: id });
-  revalidatePath("/about");
+  revalidatePath("/our-journey");
   revalidatePath("/admin/team");
   return { success: true, message: "Team member updated." };
 }
@@ -101,7 +101,7 @@ export async function softDeleteTeamMember(id: string): Promise<ActionResult> {
 
   await prisma.teamMember.update({ where: { id }, data: { deletedAt: new Date() } });
   await logAudit({ actorEmail: admin.email!, action: "DELETE", entityType: "TeamMember", entityId: id });
-  revalidatePath("/about");
+  revalidatePath("/our-journey");
   revalidatePath("/admin/team");
   return { success: true, message: "Moved to trash." };
 }

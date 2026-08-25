@@ -33,7 +33,7 @@ export default async function ServicesPage() {
               return (
                 <StaggerItem key={service.id} className="w-full sm:w-[calc(50%-1rem)]">
                   <Link
-                    href={`/services/${service.slug}`}
+                    href={`/capabilities/${service.slug}`}
                     className="group flex h-full flex-col rounded-3xl border border-border bg-card p-10 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10"
                   >
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-foreground">

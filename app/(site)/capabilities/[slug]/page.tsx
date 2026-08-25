@@ -94,7 +94,7 @@ export default async function ServiceDetailPage({
                   return (
                     <Link
                       key={s.id}
-                      href={`/services/${s.slug}`}
+                      href={`/capabilities/${s.slug}`}
                       className="group flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:border-accent hover:shadow-md"
                     >
                       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-white">

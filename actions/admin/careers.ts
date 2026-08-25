@@ -45,7 +45,7 @@ export async function createJobPosting(formData: FormData): Promise<ActionResult
   });
 
   await logAudit({ actorEmail: admin.email!, action: "CREATE", entityType: "JobPosting", entityId: created.id });
-  revalidatePath("/careers");
+  revalidatePath("/opportunities");
   revalidatePath("/admin/careers");
   return { success: true, message: "Job posting created." };
 }
@@ -80,7 +80,7 @@ export async function updateJobPosting(id: string, formData: FormData): Promise<
   });
 
   await logAudit({ actorEmail: admin.email!, action: "UPDATE", entityType: "JobPosting", entityId: id });
-  revalidatePath("/careers");
+  revalidatePath("/opportunities");
   revalidatePath("/admin/careers");
   return { success: true, message: "Job posting updated." };
 }
@@ -96,7 +96,7 @@ export async function softDeleteJobPosting(id: string): Promise<ActionResult> {
 
   await prisma.jobPosting.update({ where: { id }, data: { deletedAt: new Date() } });
   await logAudit({ actorEmail: admin.email!, action: "DELETE", entityType: "JobPosting", entityId: id });
-  revalidatePath("/careers");
+  revalidatePath("/opportunities");
   revalidatePath("/admin/careers");
   return { success: true, message: "Moved to trash." };
 }

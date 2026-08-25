@@ -72,12 +72,12 @@ export function Hero({ company }: { company: Company }) {
             className="mt-9 flex flex-wrap gap-4"
           >
             <Button asChild variant="accent" size="lg">
-              <Link href="/contact">
+              <Link href="/lets-talk">
                 Let&apos;s Talk <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="glass" size="lg">
-              <Link href="/services">Our Capabilities</Link>
+              <Link href="/capabilities">Our Capabilities</Link>
             </Button>
           </motion.div>
 
