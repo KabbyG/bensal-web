@@ -53,7 +53,7 @@ export default async function NestPage() {
                   </div>
                 </div>
                 <iframe
-                  src={`${profile.pdfUrl}#toolbar=0`}
+                  src="/api/nest/pdf#toolbar=0"
                   title={profile.pdfName ?? "NeST Business Line Certificate"}
                   className="h-[70vh] w-full sm:h-[80vh]"
                 />
