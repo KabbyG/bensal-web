@@ -60,6 +60,17 @@ async function main() {
     await prisma.company.create({ data: DEFAULT_COMPANY_DATA });
   }
 
+  // --- NEST business line -------------------------------------------------
+  const existingNestProfile = await prisma.nestProfile.findFirst();
+  const nestProfileData = {
+    description: "Explore our full NeST business line and see the range we're registered to supply.",
+  };
+  if (existingNestProfile) {
+    await prisma.nestProfile.update({ where: { id: existingNestProfile.id }, data: nestProfileData });
+  } else {
+    await prisma.nestProfile.create({ data: nestProfileData });
+  }
+
   // --- Leadership --------------------------------------------------------
   await prisma.teamMember.deleteMany({ where: { isLeadership: true } });
   await prisma.teamMember.createMany({

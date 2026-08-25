@@ -92,9 +92,10 @@ export async function saveImageUpload(file: File, folder: ImageUploadFolder): Pr
 }
 
 /**
- * Validate-and-persist for public contact/career file attachments.
+ * Validate-and-persist for public contact/career file attachments, and
+ * admin-managed documents (e.g. the NeST business-line certificate PDF).
  */
-export async function saveUpload(file: File, folder: "contact" | "careers"): Promise<string> {
+export async function saveUpload(file: File, folder: "contact" | "careers" | "nest"): Promise<string> {
   validate(file, ALLOWED_MIME_TYPES, "Unsupported file type. Allowed: PDF, DOC, DOCX, PNG, JPG, JPEG, ZIP, RAR.");
   return persist(file, folder);
 }

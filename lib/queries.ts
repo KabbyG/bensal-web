@@ -16,6 +16,10 @@ export function getCompanyOrNull() {
   return prisma.company.findFirst();
 }
 
+export function getNestProfile() {
+  return prisma.nestProfile.findFirst();
+}
+
 export function getLeadership() {
   return prisma.teamMember.findMany({
     where: { isLeadership: true, deletedAt: null },

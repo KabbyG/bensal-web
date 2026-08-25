@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, Phone, ChevronDown } from "lucide-react";
+import { Menu, Phone, ChevronDown, BadgeCheck } from "lucide-react";
 import { motion, useScroll, useMotionValueEvent, useReducedMotion } from "framer-motion";
 import type { Company } from "@/lib/generated/prisma/client";
 import type { NavLink } from "@/lib/queries";
@@ -98,6 +98,18 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <Link
+            href="/nest"
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-bold italic tracking-tight transition-all duration-200",
+              transparent
+                ? "border-white/30 bg-white/10 text-white hover:bg-white/20"
+                : "border-accent/25 bg-accent/10 text-accent hover:border-accent hover:bg-accent hover:text-white"
+            )}
+          >
+            <BadgeCheck className="h-3.5 w-3.5 not-italic" />
+            NEST
+          </Link>
           <a
             href={`tel:${company.phone.replace(/\s+/g, "")}`}
             className={cn(
@@ -163,7 +175,16 @@ export function Navbar({ company, links }: { company: Company; links: NavLink[] 
                   </div>
                 ))}
               </nav>
-              <div className="mt-8 space-y-3 border-t border-border pt-6">
+              <div className="mt-8 space-y-4 border-t border-border pt-6">
+                <SheetClose asChild>
+                  <Link
+                    href="/nest"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1.5 text-sm font-bold italic tracking-tight text-accent"
+                  >
+                    <BadgeCheck className="h-3.5 w-3.5 not-italic" />
+                    NEST
+                  </Link>
+                </SheetClose>
                 <a href={`tel:${company.phone.replace(/\s+/g, "")}`} className="flex items-center gap-2 text-sm font-semibold">
                   <Phone className="h-4 w-4 text-accent" />
                   {company.phone}

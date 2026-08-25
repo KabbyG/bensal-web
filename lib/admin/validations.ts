@@ -73,6 +73,10 @@ export const serviceSchema = z.object({
   seoDescription: optionalString,
 });
 
+export const nestProfileSchema = z.object({
+  description: z.string().trim().min(1, "Description is required"),
+});
+
 export const productCategorySchema = z.object({
   slug: z.string().trim().min(1, "Slug is required"),
   name: z.string().trim().min(1, "Name is required"),

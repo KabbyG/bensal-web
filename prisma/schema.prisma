@@ -80,6 +80,16 @@ model Company {
   updatedAt DateTime @updatedAt
 }
 
+// Singleton — the NeST (National e-Procurement System of Tanzania)
+// business-line registration blurb + certificate PDF shown at /nest.
+model NestProfile {
+  id          String   @id @default(cuid())
+  description String   @db.Text
+  pdfUrl      String?
+  pdfName     String?
+  updatedAt   DateTime @updatedAt
+}
+
 model TeamMember {
   id           String    @id @default(cuid())
   name         String
