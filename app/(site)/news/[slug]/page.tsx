@@ -67,7 +67,13 @@ export default async function NewsDetailPage({
 
             {post.coverImage && (
               <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl bg-surface-muted">
-                <Image src={post.coverImage} alt={post.title} fill className="object-cover" />
+                <Image
+                  src={post.coverImage}
+                  alt={post.title}
+                  fill
+                  sizes="(min-width: 768px) 768px, 100vw"
+                  className="object-cover"
+                />
               </div>
             )}
 

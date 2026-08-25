@@ -17,7 +17,13 @@ export function Overview({ company }: { company: Company }) {
       <Container className="grid items-center gap-16 lg:grid-cols-2">
         <FadeIn className="relative">
           <div className="relative aspect-square max-w-md overflow-hidden rounded-[2.5rem] bg-surface-muted p-12">
-            <Image src="/brand/overview-team.png" alt={company.name} fill className="object-contain p-6" />
+            <Image
+              src="/brand/overview-team.png"
+              alt={company.name}
+              fill
+              sizes="(min-width: 1024px) 448px, 90vw"
+              className="object-contain p-6"
+            />
           </div>
         </FadeIn>
 

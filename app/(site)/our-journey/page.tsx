@@ -105,7 +105,7 @@ export default async function OurJourneyPage() {
                     <CardContent className="flex flex-col items-center p-8">
                       <div className="relative h-24 w-24 overflow-hidden rounded-full bg-accent/10">
                         {member.photoUrl ? (
-                          <Image src={member.photoUrl} alt={member.name} fill className="object-cover" />
+                          <Image src={member.photoUrl} alt={member.name} fill sizes="96px" className="object-cover" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center font-display text-2xl font-bold text-accent">
                             {member.name

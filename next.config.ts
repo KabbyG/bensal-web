@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   // own __dirname, which Next's bundler can't trace — externalizing it means
   // Next copies the whole package (data files included) into the standalone
   // output instead of trying to inline it.
-  serverExternalPackages: ["pdfkit"],
+  serverExternalPackages: ["pdfkit", "sharp"],
   // Next.js Server Actions cap the request body at 1MB by default, and the
   // contact/career forms submit file attachments straight through a
   // "use server" action — so any attachment over 1MB was being rejected
@@ -30,6 +30,14 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "**" },
     ],
+    // AVIF first (smallest), falling back to WebP, then the original format
+    // for browsers that support neither.
+    formats: ["image/avif", "image/webp"],
+    // Uploaded files are content-addressed (saveImageUpload/saveUpload write
+    // a random UUID into the filename), so a re-upload is always a new URL —
+    // nothing ever needs the old cached bytes invalidated, making a long
+    // cache lifetime for the optimizer's output safe.
+    minimumCacheTTL: 31536000,
   },
   // Route folders were renamed to match their nav labels (About -> Our
   // Journey, Services -> Capabilities, Careers -> Opportunities,

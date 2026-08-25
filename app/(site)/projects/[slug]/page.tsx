@@ -57,7 +57,13 @@ export default async function ProjectDetailPage({
 
             {project.coverImage && (
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-surface-muted">
-                <Image src={project.coverImage} alt={project.title} fill className="object-cover" />
+                <Image
+                  src={project.coverImage}
+                  alt={project.title}
+                  fill
+                  sizes="(min-width: 1024px) 58vw, 100vw"
+                  className="object-cover"
+                />
               </div>
             )}
 

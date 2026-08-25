@@ -19,6 +19,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
                   src={item.thumbnailUrl ?? item.url}
                   alt={item.title}
                   fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 {item.type === "VIDEO" && (
@@ -37,7 +38,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
                 <video src={item.url} controls className="max-h-[75vh] w-full rounded-xl" />
               ) : (
                 <div className="relative aspect-video w-full overflow-hidden rounded-xl">
-                  <Image src={item.url} alt={item.title} fill className="object-contain" />
+                  <Image src={item.url} alt={item.title} fill sizes="(min-width: 768px) 768px, 100vw" className="object-contain" />
                 </div>
               )}
             </DialogContent>

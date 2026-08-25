@@ -45,7 +45,7 @@ export function NestBusinessLineDialog({
       >
         <header className="flex items-center gap-3 border-b border-border bg-surface-muted/60 px-5 py-4 pr-14 sm:px-6 sm:pr-16">
           <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white ring-1 ring-border">
-            <Image src="/brand/logo.png" alt="Bensal" fill className="object-cover object-left" />
+            <Image src="/brand/logo.png" alt="Bensal" fill sizes="40px" className="object-cover object-left" />
           </div>
           <div className="min-w-0">
             <DialogTitle className="truncate font-display text-base font-semibold sm:text-lg">

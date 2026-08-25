@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { put } from "@vercel/blob";
+import sharp from "sharp";
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
@@ -42,17 +43,15 @@ function validate(file: File, allowed: Set<string>, message: string) {
 }
 
 /**
- * Persists a validated file under `<folder>/<uuid>-<name>` and returns its
- * public URL. Uses Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set (Vercel's
- * serverless filesystem is ephemeral/read-only outside `/tmp`); otherwise
- * writes to local disk under `public/uploads/<folder>` — the path Docker
- * mounts a persistent volume at for local/self-hosted deployments.
+ * Persists a buffer under `<folder>/<filename>` and returns its public URL.
+ * Uses Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set (Vercel's serverless
+ * filesystem is ephemeral/read-only outside `/tmp`); otherwise writes to
+ * local disk under `public/uploads/<folder>` — the path Docker mounts a
+ * persistent volume at for local/self-hosted deployments.
  */
-async function persist(file: File, folder: string): Promise<string> {
-  const filename = `${randomUUID()}-${sanitizeFilename(file.name)}`;
-
+async function persistBuffer(buffer: Buffer, filename: string, folder: string): Promise<string> {
   if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const blob = await put(`${folder}/${filename}`, file, {
+    const blob = await put(`${folder}/${filename}`, buffer, {
       access: "public",
       addRandomSuffix: false,
     });
@@ -64,10 +63,45 @@ async function persist(file: File, folder: string): Promise<string> {
   await mkdir(targetDir, { recursive: true });
 
   const filePath = path.join(targetDir, filename);
-  const buffer = Buffer.from(await file.arrayBuffer());
   await writeFile(filePath, buffer);
 
   return `/uploads/${folder}/${filename}`;
+}
+
+async function persist(file: File, folder: string): Promise<string> {
+  const filename = `${randomUUID()}-${sanitizeFilename(file.name)}`;
+  const buffer = Buffer.from(await file.arrayBuffer());
+  return persistBuffer(buffer, filename, folder);
+}
+
+// Nothing on the site renders an image wider than this — resizing anything
+// bigger down to it (without upscaling smaller ones), on top of recompressing,
+// is what turns a multi-megabyte admin upload (e.g. a straight-from-camera
+// partner logo) into the tens-to-low-hundreds of KB actually served.
+const MAX_IMAGE_DIMENSION = 2400;
+
+/**
+ * Re-encodes a raster image at a bounded size and a lossy-but-clean
+ * compression level. SVG (vector) and GIF (may be animated) pass through
+ * untouched — sharp's raster pipeline isn't the right tool for either.
+ */
+async function optimizeImage(buffer: Buffer, mimeType: string): Promise<Buffer> {
+  if (mimeType === "image/svg+xml" || mimeType === "image/gif") {
+    return buffer;
+  }
+
+  const pipeline = sharp(buffer)
+    .rotate() // apply EXIF orientation before the metadata that stores it is stripped
+    .resize({
+      width: MAX_IMAGE_DIMENSION,
+      height: MAX_IMAGE_DIMENSION,
+      fit: "inside",
+      withoutEnlargement: true,
+    });
+
+  if (mimeType === "image/jpeg") return pipeline.jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+  if (mimeType === "image/webp") return pipeline.webp({ quality: 82 }).toBuffer();
+  return pipeline.png({ compressionLevel: 9 }).toBuffer();
 }
 
 export type ImageUploadFolder =
@@ -88,7 +122,12 @@ export type ImageUploadFolder =
  */
 export async function saveImageUpload(file: File, folder: ImageUploadFolder): Promise<string> {
   validate(file, IMAGE_MIME_TYPES, "Unsupported image type. Allowed: PNG, JPG, WEBP, GIF, SVG.");
-  return persist(file, folder);
+
+  const filename = `${randomUUID()}-${sanitizeFilename(file.name)}`;
+  const rawBuffer = Buffer.from(await file.arrayBuffer());
+  const optimized = await optimizeImage(rawBuffer, file.type);
+
+  return persistBuffer(optimized, filename, folder);
 }
 
 /**

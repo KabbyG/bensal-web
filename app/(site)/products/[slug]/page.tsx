@@ -58,7 +58,13 @@ export default async function ProductDetailPage({
 
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-surface-muted">
               {product.images[0] ? (
-                <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
+                <Image
+                  src={product.images[0]}
+                  alt={product.name}
+                  fill
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  className="object-cover"
+                />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-muted-foreground">
                   <PackageSearch className="h-14 w-14" />
