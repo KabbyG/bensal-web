@@ -6,7 +6,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getService, getServices } from "@/lib/queries";
 import { safeStaticParams } from "@/lib/safe-static-params";
-import { getIcon } from "@/lib/icon-map";
+import { ServiceIcon } from "@/lib/icon-map";
 import { PageHeader } from "@/components/layout/page-header";
 import { Container, Section } from "@/components/ui/container";
 import { FadeIn } from "@/components/motion/fade-in";
@@ -42,7 +42,6 @@ export default async function ServiceDetailPage({
 
   if (!service) notFound();
 
-  const Icon = getIcon(service.icon);
   const otherServices = allServices.filter((s) => s.id !== service.id);
 
   return (
@@ -53,7 +52,7 @@ export default async function ServiceDetailPage({
         <Container>
           <FadeIn className="mx-auto max-w-3xl">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10 text-accent">
-              <Icon className="h-8 w-8" />
+              <ServiceIcon icon={service.icon} customIconUrl={service.customIconUrl} className="h-8 w-8" />
             </div>
             <div
               className="prose prose-neutral prose-lg mt-8 max-w-none dark:prose-invert"
@@ -76,7 +75,11 @@ export default async function ServiceDetailPage({
                   />
                   <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-brand-forest/85 via-brand-forest/10 to-transparent" />
                   <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-brand-forest/70 px-3.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm sm:bottom-5 sm:left-5">
-                    <Icon className="h-3.5 w-3.5 text-brand-green" />
+                    <ServiceIcon
+                      icon={service.icon}
+                      customIconUrl={service.customIconUrl}
+                      className="h-3.5 w-3.5 text-brand-green"
+                    />
                     {service.title} in action
                   </div>
                 </div>
@@ -114,7 +117,6 @@ export default async function ServiceDetailPage({
               </div>
               <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {otherServices.map((s) => {
-                  const OtherIcon = getIcon(s.icon);
                   return (
                     <Link
                       key={s.id}
@@ -122,7 +124,7 @@ export default async function ServiceDetailPage({
                       className="group flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:border-accent hover:shadow-md"
                     >
                       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-white">
-                        <OtherIcon className="h-5 w-5" />
+                        <ServiceIcon icon={s.icon} customIconUrl={s.customIconUrl} className="h-5 w-5" />
                       </div>
                       <div className="flex items-center gap-1.5 text-sm font-semibold">
                         {s.title}

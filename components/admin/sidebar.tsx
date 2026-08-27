@@ -27,6 +27,7 @@ import {
   ScrollText,
   Menu as MenuIcon,
   BadgeCheck,
+  Shapes,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,7 @@ const NAV_SECTIONS: { label: string; items: { href: string; label: string; icon:
       { href: "/admin/team", label: "Team", icon: Users },
       { href: "/admin/menus", label: "Menus", icon: ListTree },
       { href: "/admin/nest", label: "NEST Business Lines", icon: BadgeCheck },
+      { href: "/admin/icons", label: "Icons", icon: Shapes },
       { href: "/admin/seo", label: "SEO", icon: Search },
     ],
   },

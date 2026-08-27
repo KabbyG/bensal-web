@@ -114,7 +114,7 @@ async function main() {
         "Protecting assets and people from pests with professionalism and compliance.",
       description:
         "Our fumigation and pest control services are designed to protect your assets and people from pests with professionalism and compliance.",
-      icon: "Bug",
+      icon: "BugOff",
       order: 1,
     },
     {
@@ -139,7 +139,7 @@ async function main() {
         "Quality building materials supplied reliably for construction and infrastructure projects.",
       description:
         "We supply quality building materials for construction and infrastructure projects, supporting contractors, developers, and institutions across our branch network.",
-      icon: "Building2",
+      icon: "Bricks",
       order: 3,
     },
     {

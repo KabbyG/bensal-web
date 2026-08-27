@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getServices } from "@/lib/queries";
-import { getIcon } from "@/lib/icon-map";
+import { ServiceIcon } from "@/lib/icon-map";
 import { PageHeader } from "@/components/layout/page-header";
 import { Container, Section } from "@/components/ui/container";
 import { Stagger, StaggerItem } from "@/components/motion/fade-in";
@@ -29,7 +29,6 @@ export default async function ServicesPage() {
         <Container>
           <Stagger className="flex flex-wrap justify-center gap-8">
             {services.map((service) => {
-              const Icon = getIcon(service.icon);
               return (
                 <StaggerItem key={service.id} className="w-full sm:w-[calc(50%-1rem)]">
                   <Link
@@ -37,7 +36,7 @@ export default async function ServicesPage() {
                     className="group flex h-full flex-col rounded-3xl border border-border bg-card p-10 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10"
                   >
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-foreground">
-                      <Icon className="h-7 w-7" />
+                      <ServiceIcon icon={service.icon} customIconUrl={service.customIconUrl} className="h-7 w-7" />
                     </div>
                     <h2 className="mt-6 font-display text-2xl font-semibold">{service.title}</h2>
                     <p className="mt-3 flex-1 leading-relaxed text-muted-foreground">

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import type { Service } from "@/lib/generated/prisma/client";
 import { softDeleteService } from "@/actions/admin/services";
-import { getIcon } from "@/lib/icon-map";
+import { ServiceIcon } from "@/lib/icon-map";
 import { DataTable } from "@/components/admin/data-table";
 import { EntityDialog } from "@/components/admin/entity-dialog";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
@@ -50,14 +50,12 @@ export function ServiceManager({ data }: { data: Service[] }) {
             key: "title",
             header: "Title",
             sortable: true,
-            render: (r) => {
-              const Icon = getIcon(r.icon);
-              return (
-                <span className="inline-flex items-center gap-2">
-                  <Icon className="h-4 w-4 text-accent" /> {r.title}
-                </span>
-              );
-            },
+            render: (r) => (
+              <span className="inline-flex items-center gap-2">
+                <ServiceIcon icon={r.icon} customIconUrl={r.customIconUrl} className="h-4 w-4 text-accent" />{" "}
+                {r.title}
+              </span>
+            ),
           },
           { key: "slug", header: "Slug", sortable: true },
           {

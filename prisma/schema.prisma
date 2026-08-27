@@ -120,6 +120,7 @@ model Service {
   description      String    @db.Text
   items            String[]  @default([])
   icon             String // lucide/react-icons key
+  customIconUrl    String? // admin-uploaded icon that overrides `icon` when set
   image            String?
   order            Int       @default(0)
   isFeatured       Boolean   @default(true)
