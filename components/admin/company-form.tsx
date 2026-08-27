@@ -358,6 +358,21 @@ export function CompanyForm({ company }: { company: Company | null }) {
 
       <Card>
         <CardHeader>
+          <CardTitle>Homepage imagery</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-6 sm:grid-cols-2">
+          <ImageUploadField name="heroFile" label="Hero image" defaultUrl={c.heroImageUrl} />
+          <ImageUploadField name="overviewFile" label='"Who we are" image' defaultUrl={c.overviewImageUrl} />
+          <p className="sm:col-span-2 text-xs text-muted-foreground">
+            Uploads here are automatically resized, compressed, and color-graded toward the brand
+            palette — no editing needed before uploading. Remove an image to fall back to the
+            default artwork.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>SEO</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-5">

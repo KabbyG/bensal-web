@@ -19,15 +19,23 @@ function parseJsonField<T>(formData: FormData, name: string, fallback: T): T {
   }
 }
 
+const IMAGE_FIELD_FOLDERS = {
+  logo: "brand",
+  logoInverse: "brand",
+  favicon: "brand",
+  hero: "hero",
+  overview: "overview",
+} as const;
+
 async function resolveImage(
   formData: FormData,
-  fieldName: "logo" | "logoInverse" | "favicon",
+  fieldName: keyof typeof IMAGE_FIELD_FOLDERS,
   current: string | null
 ): Promise<string | null> {
   const file = formData.get(`${fieldName}File`);
   const remove = formData.get(`${fieldName}FileRemove`) === "true";
   if (file instanceof File && file.size > 0) {
-    return saveImageUpload(file, "brand");
+    return saveImageUpload(file, IMAGE_FIELD_FOLDERS[fieldName]);
   }
   if (remove) return null;
   return current;
@@ -85,6 +93,8 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
   let logoUrl: string | null;
   let logoInverseUrl: string | null;
   let faviconUrl: string | null;
+  let heroImageUrl: string | null;
+  let overviewImageUrl: string | null;
   try {
     logoUrl = await resolveImage(formData, "logo", existing?.logoUrl ?? DEFAULT_COMPANY_DATA.logoUrl);
     logoInverseUrl = await resolveImage(
@@ -93,6 +103,12 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
       existing?.logoInverseUrl ?? DEFAULT_COMPANY_DATA.logoInverseUrl
     );
     faviconUrl = await resolveImage(formData, "favicon", existing?.faviconUrl ?? DEFAULT_COMPANY_DATA.faviconUrl);
+    heroImageUrl = await resolveImage(formData, "hero", existing?.heroImageUrl ?? DEFAULT_COMPANY_DATA.heroImageUrl);
+    overviewImageUrl = await resolveImage(
+      formData,
+      "overview",
+      existing?.overviewImageUrl ?? DEFAULT_COMPANY_DATA.overviewImageUrl
+    );
   } catch (error) {
     if (error instanceof UploadValidationError) return { success: false, message: error.message };
     throw error;
@@ -126,6 +142,8 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
     logoUrl,
     logoInverseUrl,
     faviconUrl,
+    heroImageUrl,
+    overviewImageUrl,
   };
 
   const saved = existing

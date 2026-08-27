@@ -118,13 +118,13 @@ export function Hero({ company }: { company: Company }) {
             animate={prefersReducedMotion ? undefined : { opacity: [0.5, 0.8, 0.5] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
-          <div className="animate-float">
+          <div className="relative h-[26rem] w-[22rem] animate-float drop-shadow-2xl">
             <Image
-              src="/brand/hero-runner.png"
-              alt="Bensal Investment team member delivering a package"
-              width={1000}
-              height={1160}
-              className="h-[26rem] w-auto drop-shadow-2xl"
+              src={company.heroImageUrl ?? "/brand/hero-runner.png"}
+              alt={`${company.name} in action`}
+              fill
+              sizes="352px"
+              className="object-contain"
               priority
             />
           </div>

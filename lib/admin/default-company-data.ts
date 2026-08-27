@@ -72,6 +72,8 @@ export const DEFAULT_COMPANY_DATA = {
   logoUrl: "/brand/logo.png",
   logoInverseUrl: "/brand/logo-inverse.png",
   faviconUrl: "/brand/icon.png",
+  heroImageUrl: "/brand/hero-runner.png",
+  overviewImageUrl: "/brand/overview-team.png",
   seoTitle: "Bensal Investment Co. Ltd. | Cleaning, Fumigation & Supply — Tanzania",
   seoDescription:
     "Bensal Investment Co. Ltd. — Cleaning & Gardening, Fumigation & Pest Control, Electronics & ICT Equipment Supply, and Building Materials Supply across Tanzania since 2014.",

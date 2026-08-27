@@ -171,8 +171,11 @@ async function optimizeImage(
 
 export type ImageUploadFolder =
   | "brand"
+  | "hero"
+  | "overview"
   | "team"
   | "services"
+  | "icons"
   | "products"
   | "projects"
   | "gallery"
@@ -180,6 +183,15 @@ export type ImageUploadFolder =
   | "testimonials"
   | "partners"
   | "clients";
+
+// Folders where a photo is scene/lifestyle imagery, so pushing it toward
+// the brand palette makes the site feel cohesive. Deliberately excludes
+// "brand" (logos/favicon — a partner's or Bensal's own mark must render
+// at its true colors), "team" (headshots shouldn't be tinted), "products"
+// (a customer needs to see a product's actual color), and "gallery"
+// (documentary project photos). Extend this set if another section's
+// photography should get the same treatment.
+const BRAND_GRADED_FOLDERS = new Set<ImageUploadFolder>(["hero", "overview", "services"]);
 
 /**
  * Validate-and-persist for admin-managed images (logos, photos, gallery,
@@ -190,10 +202,13 @@ export async function saveImageUpload(file: File, folder: ImageUploadFolder): Pr
 
   const filename = `${randomUUID()}-${sanitizeFilename(file.name)}`;
   const rawBuffer = Buffer.from(await file.arrayBuffer());
-  // Every capability page's cover photo gets graded toward the brand
-  // palette automatically, so new uploads always match the treatment
-  // applied to the existing ones — no manual editing step for admins.
-  const optimized = await optimizeImage(rawBuffer, file.type, { brandGrade: folder === "services" });
+  // Scene photography gets graded toward the brand palette automatically,
+  // so new uploads always match the treatment applied to existing ones —
+  // no manual editing step for admins. Every upload is also resized and
+  // recompressed regardless of folder, which is what keeps page loads fast.
+  const optimized = await optimizeImage(rawBuffer, file.type, {
+    brandGrade: BRAND_GRADED_FOLDERS.has(folder),
+  });
 
   return persistBuffer(optimized, filename, folder);
 }

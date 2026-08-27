@@ -74,6 +74,12 @@ model Company {
   logoInverseUrl String?
   faviconUrl     String?
 
+  // Homepage hero and "Who we are" illustration/photo. Nullable so existing
+  // rows (pre-dating this field) fall back to the static bundled asset in
+  // the component instead of rendering nothing.
+  heroImageUrl     String?
+  overviewImageUrl String?
+
   seoTitle       String?
   seoDescription String?
 
