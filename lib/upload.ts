@@ -127,7 +127,7 @@ const TINT_STRENGTH = 0.4;
  * width/height/alpha this function reasons about have to come from an
  * already-rendered buffer.
  */
-async function applyBrandGrade(buffer: Buffer): Promise<Buffer> {
+async function applyBrandGrade(buffer: Buffer<ArrayBuffer>): Promise<Buffer<ArrayBuffer>> {
   const base = sharp(buffer);
   const { width, height, hasAlpha } = await base.metadata();
   if (!width || !height) return buffer;
