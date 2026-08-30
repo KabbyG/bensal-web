@@ -18,7 +18,7 @@ export function Overview({ company }: { company: Company }) {
         <FadeIn className="relative">
           <div className="relative aspect-square max-w-md overflow-hidden rounded-[2.5rem] bg-surface-muted p-12">
             <Image
-              src={company.overviewImageUrl ?? "/brand/overview-team.png"}
+              src={company.overviewImageUrl ?? "/brand/overview-hello2.jpg"}
               alt={company.name}
               fill
               sizes="(min-width: 1024px) 448px, 90vw"
