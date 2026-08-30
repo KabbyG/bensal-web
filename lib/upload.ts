@@ -108,26 +108,55 @@ function vignetteSvg(w: number, h: number) {
   </svg>`;
 }
 
+// Blend strength for the forest tint — how much of the tinted layer shows
+// through over the photo's own colors (so a yellow bucket or red mop handle
+// stays legible instead of going monochrome).
+const TINT_STRENGTH = 0.4;
+
 /**
  * Pushes a photo toward the brand palette: a luminance-preserving tint
- * toward forest green blended back at partial strength (so a photo's own
- * colors — a yellow bucket, a red mop handle — stay legible instead of
- * going monochrome), a soft leaf-green glow, and a light vignette for
- * depth. Same recipe used to grade the Cleaning & Gardening cover photo,
- * now applied to every capability/service image automatically so the
- * whole set stays visually consistent without a manual editing step.
+ * toward forest green blended back at partial strength, a soft leaf-green
+ * glow, and a light vignette for depth. Same recipe used to grade the
+ * Cleaning & Gardening cover photo, now applied to every hero/overview/
+ * service image automatically so the whole set stays visually consistent
+ * without a manual editing step.
+ *
+ * Takes and returns a Buffer rather than a live pipeline: sharp's
+ * `.metadata()` always reports the *source* file's dimensions, never those
+ * of operations (resize, trim) already queued on the same instance, so the
+ * width/height/alpha this function reasons about have to come from an
+ * already-rendered buffer.
  */
-async function applyBrandGrade(pipeline: ReturnType<typeof sharp>): Promise<ReturnType<typeof sharp>> {
-  const { width, height } = await pipeline.clone().metadata();
-  if (!width || !height) return pipeline;
+async function applyBrandGrade(buffer: Buffer): Promise<Buffer> {
+  const base = sharp(buffer);
+  const { width, height, hasAlpha } = await base.metadata();
+  if (!width || !height) return buffer;
 
-  const [tintedLayer, glowLayer, vignetteLayer] = await Promise.all([
-    pipeline.clone().tint(BRAND_FOREST).ensureAlpha(0.4).png().toBuffer(),
+  let tintedLayer: Buffer;
+  if (hasAlpha) {
+    // A cut-out subject on a transparent background is already fully
+    // opaque wherever it has content, so ensureAlpha(TINT_STRENGTH) below
+    // would be a no-op (it only sets alpha when adding a *new* channel) —
+    // scale the subject's own alpha down instead to get the same
+    // partial-strength blend without tinting at full opacity.
+    const alphaMask = await base.clone().ensureAlpha().extractChannel("alpha").raw().toBuffer();
+    const scaledAlpha = Buffer.from(alphaMask.map((a) => Math.round(a * TINT_STRENGTH)));
+    const tintedRgb = await base.clone().tint(BRAND_FOREST).removeAlpha().raw().toBuffer();
+    tintedLayer = await sharp(tintedRgb, { raw: { width, height, channels: 3 } })
+      .joinChannel(scaledAlpha, { raw: { width, height, channels: 1 } })
+      .png()
+      .toBuffer();
+  } else {
+    tintedLayer = await base.clone().tint(BRAND_FOREST).ensureAlpha(TINT_STRENGTH).png().toBuffer();
+  }
+
+  const [glowLayer, vignetteLayer] = await Promise.all([
     sharp(Buffer.from(radialGlowSvg(width, height))).png().toBuffer(),
     sharp(Buffer.from(vignetteSvg(width, height))).png().toBuffer(),
   ]);
 
-  return pipeline
+  const graded = base
+    .clone()
     .composite([
       { input: tintedLayer, blend: "over" },
       { input: glowLayer, blend: "screen" },
@@ -135,6 +164,27 @@ async function applyBrandGrade(pipeline: ReturnType<typeof sharp>): Promise<Retu
     ])
     .modulate({ saturation: 1.12 })
     .linear(1.06, -10);
+
+  if (!hasAlpha) return graded.png().toBuffer();
+
+  // The glow/vignette layers are sized for full-bleed photos and would
+  // otherwise leave a colored halo outside a cut-out — clip the graded
+  // result back to the source's own silhouette.
+  const [gradedPng, alphaMask] = await Promise.all([
+    graded.png().toBuffer(),
+    base.clone().ensureAlpha().extractChannel("alpha").raw().toBuffer(),
+  ]);
+  const maskPng = await sharp({
+    create: { width, height, channels: 3, background: { r: 0, g: 0, b: 0 } },
+  })
+    .joinChannel(alphaMask, { raw: { width, height, channels: 1 } })
+    .png()
+    .toBuffer();
+
+  return sharp(gradedPng)
+    .composite([{ input: maskPng, blend: "dest-in" }])
+    .png()
+    .toBuffer();
 }
 
 /**
@@ -151,22 +201,38 @@ async function optimizeImage(
     return buffer;
   }
 
-  let pipeline = sharp(buffer)
-    .rotate() // apply EXIF orientation before the metadata that stores it is stripped
-    .resize({
-      width: MAX_IMAGE_DIMENSION,
-      height: MAX_IMAGE_DIMENSION,
-      fit: "inside",
-      withoutEnlargement: true,
-    });
+  const { hasAlpha } = await sharp(buffer).metadata();
 
-  if (options?.brandGrade) {
-    pipeline = await applyBrandGrade(pipeline);
+  let pipeline = sharp(buffer).rotate(); // apply EXIF orientation before the metadata that stores it is stripped
+
+  // A cut-out subject (transparent background) uploaded on a huge canvas
+  // with lots of empty margin — e.g. a stock photo cropped for print —
+  // would otherwise get resized as a whole and end up looking small once
+  // placed in a fixed-size box. Trimming to the subject's own bounding box
+  // first means the size cap below, and the site's layout, both work with
+  // the actual content instead of mostly-empty canvas. Skipped for opaque
+  // photos: a real photograph's edge pixels are content, not padding, and
+  // trimming those would crop into the scene.
+  if (options?.brandGrade && hasAlpha) {
+    pipeline = pipeline.trim({ threshold: 10 });
   }
 
-  if (mimeType === "image/jpeg") return pipeline.jpeg({ quality: 82, mozjpeg: true }).toBuffer();
-  if (mimeType === "image/webp") return pipeline.webp({ quality: 82 }).toBuffer();
-  return pipeline.png({ compressionLevel: 9 }).toBuffer();
+  pipeline = pipeline.resize({
+    width: MAX_IMAGE_DIMENSION,
+    height: MAX_IMAGE_DIMENSION,
+    fit: "inside",
+    withoutEnlargement: true,
+  });
+
+  let working = await pipeline.toBuffer();
+  if (options?.brandGrade) {
+    working = await applyBrandGrade(working);
+  }
+  const final = sharp(working);
+
+  if (mimeType === "image/jpeg") return final.jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+  if (mimeType === "image/webp") return final.webp({ quality: 82 }).toBuffer();
+  return final.png({ compressionLevel: 9 }).toBuffer();
 }
 
 export type ImageUploadFolder =

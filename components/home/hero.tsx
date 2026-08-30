@@ -120,7 +120,7 @@ export function Hero({ company }: { company: Company }) {
           />
           <div className="relative h-[26rem] w-[22rem] animate-float drop-shadow-2xl">
             <Image
-              src={company.heroImageUrl ?? "/brand/hero-runner.png"}
+              src={company.heroImageUrl ?? "/brand/hero-hello1.png"}
               alt={`${company.name} in action`}
               fill
               sizes="352px"
