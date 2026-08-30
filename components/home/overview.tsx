@@ -16,13 +16,13 @@ export function Overview({ company }: { company: Company }) {
     <Section>
       <Container className="grid items-center gap-16 lg:grid-cols-2">
         <FadeIn className="relative">
-          <div className="relative aspect-square max-w-md overflow-hidden rounded-[2.5rem] bg-surface-muted p-12">
+          <div className="relative aspect-square max-w-md overflow-hidden rounded-[4rem] bg-surface-muted p-12">
             <Image
               src={company.overviewImageUrl ?? "/brand/overview-hello2.jpg"}
               alt={company.name}
               fill
               sizes="(min-width: 1024px) 448px, 90vw"
-              className="rounded-[2.5rem] object-contain p-6"
+              className="rounded-[4rem] object-contain p-6"
             />
           </div>
         </FadeIn>
