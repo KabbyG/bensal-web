@@ -22,7 +22,7 @@ export function Overview({ company }: { company: Company }) {
               alt={company.name}
               fill
               sizes="(min-width: 1024px) 448px, 90vw"
-              className="rounded-[4rem] object-contain p-6"
+              className="rounded-[1rem] object-cover"
             />
           </div>
         </FadeIn>
